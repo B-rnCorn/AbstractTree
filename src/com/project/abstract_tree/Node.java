@@ -1,4 +1,4 @@
-package com.project.abstract_tree.core;
+package com.project.abstract_tree;
 
 import java.util.LinkedList;
 
