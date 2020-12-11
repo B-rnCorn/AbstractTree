@@ -1,11 +1,9 @@
-package com.project.abstract_tree;
-
 import java.util.LinkedList;
 
 public class Node <T> {
     private int idNode;
     private T value;
-    private LinkedList<Node> childrens;
+    private LinkedList<Node> children;
     private Node parent;
 
     // Конструкторы
@@ -13,23 +11,24 @@ public class Node <T> {
         this.idNode=idNode;
         this.value=value;
         this.parent=parent;
+        this.children = new LinkedList<>();
     }
 
-    public void Node(int idNode,T value){
+    public Node(int idNode,T value){
         this(idNode, value, null);
     }
 
     //Геттреры и сеттеры атрибутов
     public void setChildren(int idNode,T value,Node parent){
-        childrens.add(new Node(idNode,value,parent));
+        children.add(new Node(idNode,value,parent));
     }
 
     public void setChildren(Node node){
-        childrens.add(node);
+        children.add(node);
     }
 
     public LinkedList<Node> getChildren(){
-        return childrens;
+        return children;
     }
 
     public int getIdNode(){
