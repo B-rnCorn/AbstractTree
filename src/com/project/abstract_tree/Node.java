@@ -28,7 +28,7 @@ public class Node <T> {
         childrens.add(node);
     }
 
-    public LinkedList<Node> getChildrens(){
+    public LinkedList<Node> getChildren(){
         return childrens;
     }
 
