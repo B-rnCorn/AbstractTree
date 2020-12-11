@@ -18,6 +18,10 @@ public class Node <T> {
         this(idNode, value, null);
     }
 
+    public Node(){
+        this(0, (T) new Object());
+    }
+
     //Геттреры и сеттеры атрибутов
     public void setChildren(int idNode,T value,Node parent){
         children.add(new Node(idNode,value,parent));

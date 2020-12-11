@@ -1,0 +1,106 @@
+import java.util.LinkedList;
+
+import java.io.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+
+public class Tree implements Serializable {
+
+    private Node root;  // Корень дерева
+
+    //Конструкторы
+    public Tree(Node root){
+        this.root = root;
+    }
+
+    public Tree(){
+        this(new Node());
+    }
+
+    // Методы
+    //Удаление дерева
+    public void deleteTree(){
+        this.root = null;
+    }
+
+    //Добавление Узла к заданному Родителю
+    public void add(int parentID, Node addingNode){
+        Node parent = search(root, parentID);
+        parent.setChildren(addingNode);
+    }
+
+    //Удаление Узла
+    public void delete(int nodeID){
+        Node parent = search(root, nodeID).getParent();
+        deleteSubNode(nodeID, parent);
+    }
+
+    public void deleteSubNode(int subNodeID, Node node){
+        //Поиск Узла среди дочерних узлов Родителя
+        Iterator iterator = node.getChildren().iterator();
+
+        while(iterator.hasNext()){
+            Node tmp = (Node) iterator.next();
+            if(tmp.getIdNode() == subNodeID) {
+                iterator.remove();
+                break;
+            }
+        }
+    }
+
+    // Расщепление ветви дерева
+    public void splitNode(Node splitingNode){
+        int parentID = splitingNode.getParent().getIdNode();
+
+        //Добавить дочерние узлы Разделяемого Узла в список дочерних узлов Родительского Узла
+        LinkedList<Node> list = splitingNode.getChildren();
+        for (Node child : list){
+            add(parentID, child);
+        }
+
+        //Удалить текущий узел из списка дочерних узлов Родителя
+        deleteSubNode(splitingNode.getIdNode(), splitingNode.getParent());
+    }
+
+    //Поиск Узла по ключу
+    public Node search(Node tmp, int nodeID){
+        if (tmp == null) {
+            return null;
+        }
+
+        if (tmp.getIdNode() == nodeID) {
+            return tmp;
+        }
+
+        //Рекурсивно искать Узел среди дочерних узлов
+        LinkedList<Node> list = tmp.getChildren();
+        for (Node child : list){
+            return search(child, nodeID);
+        }
+        return null;
+    }
+
+    //Сохранение Дерева в файл на диск
+    public File serializeToFile(String fileName){
+        File treeFile = new File(fileName);
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(treeFile))){
+            out.writeObject(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            return treeFile;
+        }
+    }
+
+    //Загрузка Дерева из файла с диска
+    public Tree deserializeFromFile(String fileName){
+        Tree deserialTree = null;
+        try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))){
+            deserialTree = (Tree) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            return deserialTree;
+        }
+    }
+}
