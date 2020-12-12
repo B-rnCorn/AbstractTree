@@ -1,3 +1,5 @@
+package com.project.abstract_tree;
+
 import java.util.LinkedList;
 
 import java.io.*;
@@ -16,7 +18,13 @@ public class Tree implements Serializable {
     public Tree(){
         this(new Node());
     }
-
+    //get/set для корня
+    public Node getRoot(){
+        return root;
+    }
+    public void setRoot(Node root){
+        this.root=root;
+    }
     // Методы
     //Удаление дерева
     public void deleteTree(){
@@ -102,5 +110,55 @@ public class Tree implements Serializable {
         } finally {
             return deserialTree;
         }
+    }
+
+    //Добавление узла/ветви дерева
+    public void addBranch(int nodeId,Node nodeAdd){
+        Node destinationNode=search(new Node(),nodeId);
+        destinationNode.setChildren(nodeAdd);
+        nodeAdd.setParent(destinationNode);
+    }
+    //Удаление узла/ветви дерева
+    public void deleteBranch(int nodeId){
+        Node delNode=search(new Node(),nodeId);
+        LinkedList<Node> parentChildren =delNode.getParent().getChildren();
+        Node tempNode;
+        for(int i=0;i<parentChildren.size();i++) {
+            tempNode = parentChildren.get(i);
+            if (tempNode.getIdNode() == nodeId) parentChildren.remove(i);
+        }
+    }
+    //Клонирование дерева
+    private Node cloneTree(Node tmp){
+        if (tmp == null) {
+            return null;
+        }else
+        {
+            LinkedList<Node> list = tmp.getChildren();
+            for (Node child : list){
+                return cloneTree(child.cloneNode());
+            }
+        }
+        return null;
+    }
+    public Tree cloneTree(){
+        return new Tree(cloneTree(this.getRoot()));
+    }
+    //Упорядочивание дерева
+    public Tree orderTree(){
+        return new Tree(orderTree(this.root));
+    }
+    private Node orderTree(Node tmp){
+        if (tmp == null) {
+            return null;
+        }else
+        {
+            LinkedList<Node> list = tmp.getChildren();
+            for (Node child : list){
+                if(child.getIdNode()>tmp.getIdNode())deleteBranch(child.getIdNode());
+                else return orderTree(child.cloneNode());
+            }
+        }
+        return null;
     }
 }

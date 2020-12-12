@@ -1,6 +1,8 @@
+package com.project.abstract_tree;
+
 import java.util.LinkedList;
 
-public class Node <T> {
+public class Node <T>{
     private int idNode;
     private T value;
     private LinkedList<Node> children;
@@ -30,6 +32,9 @@ public class Node <T> {
     public void setChildren(Node node){
         children.add(node);
     }
+    public void setChildren(LinkedList<Node> children){
+        this.children=children;
+    }
 
     public LinkedList<Node> getChildren(){
         return children;
@@ -57,5 +62,12 @@ public class Node <T> {
 
     public void setParent(Node parent) {
         this.parent = parent;
+    }
+
+    //Клонирование
+    public Node cloneNode(){
+        Node cloned= new Node (this.idNode,this.value,this.parent);
+        cloned.setChildren(this.children);
+        return cloned;
     }
 }
