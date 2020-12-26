@@ -1,7 +1,6 @@
 package com.project.abstract_tree;
 
 import java.util.Collection;
-import java.util.LinkedList;
 
 import java.io.*;
 import java.util.Iterator;
@@ -60,7 +59,8 @@ public class Tree implements Serializable {
     public boolean add(int parentID, Node addingNode){
         Node parent = search(root, parentID);
         if(parent.getId()<addingNode.getId()) {
-            parent.setChildren(addingNode);
+            addingNode.setParent(parent);
+            parent.addChildren(addingNode);
             return true;
         }else return false;
     }
@@ -173,7 +173,7 @@ public class Tree implements Serializable {
     //Добавление узла/ветви дерева
     public void addBranch(int nodeId,Node nodeAdd){
         Node destinationNode=search(new Node(),nodeId);
-        destinationNode.setChildren(nodeAdd);
+        destinationNode.addChildren(nodeAdd);
         nodeAdd.setParent(destinationNode);
     }
 
