@@ -1,5 +1,8 @@
 package com.project.abstract_tree;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.Collection;
 
 import java.io.*;
@@ -11,6 +14,7 @@ import java.util.Iterator;
  * @author Андрей
  * @version 1.0
  */
+@JsonAutoDetect
 public class Tree implements Serializable {
     /**
      * Поле для корня дерева
@@ -68,9 +72,9 @@ public class Tree implements Serializable {
      * Удаление Узла
      * @param nodeID - id узла для удаления
      */
-    public void delete(int nodeID){
+    public void removeNodeById(int nodeID){
         Node parent = search(root, nodeID).getParent();
-        deleteSub(nodeID, parent);
+        removeSubNode(nodeID, parent);
     }
 
     /**
@@ -78,7 +82,7 @@ public class Tree implements Serializable {
      * @param subNodeID
      * @param node
      */
-    public void deleteSub(int subNodeID, Node node){
+    public void removeSubNode(int subNodeID, Node node){
         //Поиск Узла среди дочерних узлов Родителя
         Iterator iterator = node.getChildren().iterator();
 
@@ -93,38 +97,42 @@ public class Tree implements Serializable {
 
     /**
      * Расщепление ветви дерева
-     * @param splittingNode - узел для расщепления
+     * @param id - id узла для расщепления
      */
-    public void split(Node splittingNode){
-        int parentID = splittingNode.getParent().getId();
+    public void splitById(int id){
+        Node splittingNode=search(id);
+        int parentId = splittingNode.getParent().getId();
 
         //Добавить дочерние узлы Разделяемого Узла в список дочерних узлов Родительского Узла
-        Collection<Node> list = splittingNode.getChildren();
-        for (Node child : list){
-            add(parentID, child);
+        Collection<Node> collection = splittingNode.getChildren();
+        for (Node child : collection){
+            add(parentId, child);
         }
 
         //Удалить текущий узел из списка дочерних узлов Родителя
-        deleteSub(splittingNode.getId(), splittingNode.getParent());
+        removeSubNode(splittingNode.getId(), splittingNode.getParent());
     }
     /**
      * Поиск узла по ключу
-     * @param nodeID - id узла
-     * @param tmp - вершина для рекурсивного поиска
+     * @param id - id узла
      */
-    public Node search(Node tmp, int nodeID){
+    public Node search(int id){
+        Node res=null;
+        return res=search(res,id);
+    }
+    private Node search(Node tmp, int nodeId){
         if (tmp == null) {
             return null;
         }
 
-        if (tmp.getId() == nodeID) {
+        if (tmp.getId() == nodeId) {
             return tmp;
         }
         Node temp;
             //Рекурсивно искать Узел среди дочерних узлов
             Collection<Node> list = tmp.getChildren();
             for (Node child : list) {
-                temp=search(child,nodeID);
+                temp=search(nodeId);
                 if (temp!=null)return temp;
             }
 
@@ -132,10 +140,19 @@ public class Tree implements Serializable {
     }
 
     /**
-     * Метод для сохранения дерева
+     * Метод для сериализации дерева в JSON
      * @param fileName - имя файла для сохранения
-     * @return - файл с деревом
      */
+    public void serialization (String fileName)throws TreeException{
+        try {
+            FileWriter fileWriter = new FileWriter(new File(fileName));
+            ObjectMapper mapper=new ObjectMapper();
+            mapper.writeValue(fileWriter,this);
+        }catch (IOException e){
+            throw new TreeException("Не удалось записать в файл: "+ fileName);
+        }
+    }
+    /*
     //Сохранение Дерева в файл на диск
     public File serializeToFile(String fileName){
         File treeFile = new File(fileName);
@@ -146,13 +163,24 @@ public class Tree implements Serializable {
         }finally {
             return treeFile;
         }
-    }
-
+    }*/
     /**
      * Метод для загрузки дерева с файла
      * @param fileName - имя файла для загрузки
      * @return - дерево, считаннок из файла
      */
+    public Tree deserialization(String fileName)throws TreeException{
+        Tree tree=null;
+        try {
+            FileReader fileReader = new FileReader(new File(fileName));
+            ObjectMapper mapper=new ObjectMapper();
+            tree=mapper.readValue(fileReader,Tree.class);
+        }catch (IOException e){
+            throw new TreeException("Не удалось считать файл: "+fileName);
+        }
+        return tree;
+    }
+    /*
     //Загрузка Дерева из файла с диска
     public Tree deserializeFromFile(String fileName){
         Tree deserialTree = null;
@@ -163,7 +191,7 @@ public class Tree implements Serializable {
         } finally {
             return deserialTree;
         }
-    }
+    }*/
 
     /**
      * Метод добавления узла/ветви дерева по id
@@ -172,7 +200,7 @@ public class Tree implements Serializable {
      */
     //Добавление узла/ветви дерева
     public void addBranch(int nodeId,Node nodeAdd){
-        Node destinationNode=search(new Node(),nodeId);
+        Node destinationNode=search(nodeId);
         destinationNode.addChildren(nodeAdd);
         nodeAdd.setParent(destinationNode);
     }
@@ -183,7 +211,7 @@ public class Tree implements Serializable {
      */
     //Удаление узла/ветви дерева
     public void deleteBranch(int nodeId){
-        Node delNode=search(new Node(),nodeId);
+        Node delNode=search(nodeId);
         Collection<Node> parentChildren =delNode.getParent().getChildren();
         Node tempNode;
         /*
