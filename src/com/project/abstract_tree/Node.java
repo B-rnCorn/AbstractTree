@@ -1,14 +1,39 @@
 package com.project.abstract_tree;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Objects;
 
+
+/**
+ * Класс узла дерева
+ * @author Сергей
+ * @author Андрей
+ * @version 1.0
+ */
+@JsonAutoDetect
 public class Node <T>{
+    /**
+     * Поле для хранения id узла
+     */
     private int id;
+    /**
+     * Поле для хранения значения узла
+     */
     private T value;
+    /**
+     * Поле для хранения дчоерних узлов
+     */
     private Collection<Node> children;
+    /**
+     * Поле для одительского узла текущей вершины
+     */
     private Node parent;
+    /**
+     * Поле для хранения количества дочерних вершин
+     */
     private int numChildren=0;
     /**
      *Конструктор
