@@ -1,9 +1,10 @@
 package com.project.abstract_tree;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.*;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Objects;
 
 
@@ -13,7 +14,9 @@ import java.util.Objects;
  * @author Андрей
  * @version 1.0
  */
-@JsonAutoDetect
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Node <T>{
     /**
      * Поле для хранения id узла
@@ -32,10 +35,6 @@ public class Node <T>{
      */
     private Node parent;
     /**
-     * Поле для хранения количества дочерних вершин
-     */
-    private int numChildren=0;
-    /**
      *Конструктор
      * @param id - id узла
      * @param parent - родительский узел
@@ -45,82 +44,7 @@ public class Node <T>{
         this.id =id;
         this.value=value;
         this.parent=parent;
-        this.children = new Collection<Node>() {
-            @Override
-            public int size() {
-                return numChildren;
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return size()==0;
-            }
-
-            @Override
-            public boolean contains(Object o) {
-                return Objects.equals(o, this);
-            }
-
-            @Override
-            public Iterator<Node> iterator() {
-                return new Iterator<Node>() {
-                    @Override
-                    public boolean hasNext() {
-                        return next()!=null;
-                    }
-
-                    @Override
-                    public Node next() {
-                        return null;//Я не знаю как обратиться к следующему элементу в общем для колекции
-                    }
-                };
-            }
-
-            @Override
-            public Object[] toArray() {
-                return new Object[0];
-            }
-
-            @Override
-            public <T> T[] toArray(T[] a) {
-                return null;
-            }
-
-            @Override
-            public boolean add(Node node) {
-                return false;
-            }
-
-            @Override
-            public boolean remove(Object o) {
-                return false;
-            }
-
-            @Override
-            public boolean containsAll(Collection<?> c) {
-                return false;
-            }
-
-            @Override
-            public boolean addAll(Collection<? extends Node> c) {
-                return false;
-            }
-
-            @Override
-            public boolean removeAll(Collection<?> c) {
-                return false;
-            }
-
-            @Override
-            public boolean retainAll(Collection<?> c) {
-                return false;
-            }
-
-            @Override
-            public void clear() {
-
-            }
-        };
+        this.children = new LinkedList<Node>();
     }
 
     /**
@@ -149,7 +73,6 @@ public class Node <T>{
      */
     public void addChildren(int idNode, T value, Node parent){
         children.add(new Node(idNode,value,parent));
-        numChildren++;
     }
 
     /**
@@ -159,7 +82,6 @@ public class Node <T>{
     public void addChildren(Node node){
         node.setParent(this);
         children.add(node);
-        numChildren++;
     }
 
     /**
@@ -167,12 +89,10 @@ public class Node <T>{
      * @param children - коллекция узлов
      */
     public void addChildren(Collection<Node> children){
-        numChildren+=children.size();
         this.children=children;
         for (Node node:children) {
             node.setParent(this);
         }
-        numChildren+=children.size();
     }
 
     /**
