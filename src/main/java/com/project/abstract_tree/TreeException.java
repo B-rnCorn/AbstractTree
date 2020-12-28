@@ -1,4 +1,4 @@
-package com.project.abstract_tree;
+package main.java.com.project.abstract_tree;
 
 /**
  * Исключение, выбрасывающееся при возникновении исключительных ситуаций, свзяанных с деревом
