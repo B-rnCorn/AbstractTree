@@ -1,6 +1,5 @@
 package com.project.abstract_tree;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Collection;
@@ -14,7 +13,6 @@ import java.util.Iterator;
  * @author Андрей
  * @version 1.0
  */
-@JsonAutoDetect
 public class Tree implements Serializable {
     /**
      * Поле для корня дерева
@@ -61,8 +59,8 @@ public class Tree implements Serializable {
      * @return - возвращает результат добавления true-добавлено, false - недобавлено
      */
     public boolean add(int parentID, Node addingNode){
-        Node parent = search(root, parentID);
-        if(parent.getId()<addingNode.getId()) {
+        Node parent = search(parentID);
+        if(parent.getId()<=addingNode.getId()) {
             addingNode.setParent(parent);
             parent.addChildren(addingNode);
             return true;
@@ -115,28 +113,23 @@ public class Tree implements Serializable {
     /**
      * Поиск узла по ключу
      * @param id - id узла
+     * @return Узел с данным id или null если такого узда нет
      */
     public Node search(int id){
-        Node res=null;
+        Node res=root;
         return res=search(res,id);
     }
     private Node search(Node tmp, int nodeId){
-        if (tmp == null) {
-            return null;
-        }
-
+        Node result=tmp;
         if (tmp.getId() == nodeId) {
-            return tmp;
+            return result;
         }
-        Node temp;
-            //Рекурсивно искать Узел среди дочерних узлов
             Collection<Node> list = tmp.getChildren();
             for (Node child : list) {
-                temp=search(nodeId);
-                if (temp!=null)return temp;
+                result = search(child, nodeId);
+                if (result.getId() == nodeId) return result;
             }
-
-        return null;
+        return result;
     }
 
     /**
@@ -145,9 +138,10 @@ public class Tree implements Serializable {
      */
     public void serialization (String fileName)throws TreeException{
         try {
-            FileWriter fileWriter = new FileWriter(new File(fileName));
+            FileWriter fileWriter = new FileWriter(new File(fileName),false);
             ObjectMapper mapper=new ObjectMapper();
             mapper.writeValue(fileWriter,this);
+            fileWriter.close();
         }catch (IOException e){
             throw new TreeException("Не удалось записать в файл: "+ fileName);
         }
@@ -169,7 +163,7 @@ public class Tree implements Serializable {
      * @param fileName - имя файла для загрузки
      * @return - дерево, считаннок из файла
      */
-    public Tree deserialization(String fileName)throws TreeException{
+    public void deserialization(String fileName)throws TreeException{
         Tree tree=null;
         try {
             FileReader fileReader = new FileReader(new File(fileName));
@@ -178,7 +172,7 @@ public class Tree implements Serializable {
         }catch (IOException e){
             throw new TreeException("Не удалось считать файл: "+fileName);
         }
-        return tree;
+        this.root=tree.root;
     }
     /*
     //Загрузка Дерева из файла с диска
