@@ -1,9 +1,8 @@
-package com.project.abstract_tree;
+package main.java.com.project.abstract_tree;
 
 public class Main {
 
     public static void main(String[] args) {
-        // write your code here
         Tree myTree = new Tree(new Node<String>(0, "Корень"));
         System.out.println(myTree.getRoot().getValue());
         myTree.add(0, new Node<String>(1, "Ветвь 1"));
@@ -15,7 +14,6 @@ public class Main {
             myTree.serialization("output.json");
             myTree.setRoot(null);
             myTree.deserialization("output.json");
-            myTree.outputTree(myTree.getRoot());
         }catch (TreeException e){
             System.out.println(e.getMessage());
         }

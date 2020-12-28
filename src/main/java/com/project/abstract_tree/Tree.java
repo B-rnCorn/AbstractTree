@@ -1,4 +1,4 @@
-package com.project.abstract_tree;
+package main.java.com.project.abstract_tree;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
