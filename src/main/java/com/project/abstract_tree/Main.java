@@ -1,4 +1,4 @@
-package main.java.com.project.abstract_tree;
+package com.project.abstract_tree;
 
 public class Main {
 
