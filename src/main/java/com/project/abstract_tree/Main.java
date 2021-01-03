@@ -20,9 +20,11 @@ public class Main {
         System.out.println("Исходное дерево");
         System.out.println(myTree.getRoot().getValue());
         myTree.outputTree(myTree.getRoot());
-        Tree myTree2 = myTree.clone();
+         Tree myTree2 = myTree.clone();
         System.out.println("Клонированное дерево");
-        myTree2.outputTree(myTree.getRoot());
+        myTree2.outputTree(myTree2.getRoot());
+        myTree2.add(10, new Node<String>(25, "Ветвь 6"));
+        myTree2.outputTree(myTree2.getRoot());
         /*for (int i = 0; i < 5; i++) {
             myTree.add(i, new Node<String>(1, "Ветвь"+i));
             myTree.add(i, new Node<String>(1, "Ветвь"+i));
