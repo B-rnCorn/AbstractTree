@@ -154,8 +154,13 @@ public class Node <T>{
      * @return клонированное дерево
      */
     public Node clone(){
-        Node cloned= new Node (this.id,this.value,this.parent);
-        cloned.addChildren(this.children);
+        Node cloned= new Node (this.id,this.value);
+        Node temp=null;
+        for(Node child:children) {
+            temp=child.clone();
+            temp.setParent(cloned);
+            cloned.addChildren(temp);
+        }
         return cloned;
     }
 }

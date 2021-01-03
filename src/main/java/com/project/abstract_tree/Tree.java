@@ -146,18 +146,6 @@ public class Tree implements Serializable {
             throw new TreeException("Не удалось записать в файл: "+ fileName);
         }
     }
-    /*
-    //Сохранение Дерева в файл на диск
-    public File serializeToFile(String fileName){
-        File treeFile = new File(fileName);
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(treeFile))){
-            out.writeObject(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            return treeFile;
-        }
-    }*/
     /**
      * Метод для загрузки дерева с файла
      * @param fileName - имя файла для загрузки
@@ -174,18 +162,6 @@ public class Tree implements Serializable {
         }
         this.root=tree.root;
     }
-    /*
-    //Загрузка Дерева из файла с диска
-    public Tree deserializeFromFile(String fileName){
-        Tree deserialTree = null;
-        try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))){
-            deserialTree = (Tree) in.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            return deserialTree;
-        }
-    }*/
 
     /**
      * Метод добавления узла/ветви дерева по id
@@ -208,11 +184,6 @@ public class Tree implements Serializable {
         Node delNode=search(nodeId);
         Collection<Node> parentChildren =delNode.getParent().getChildren();
         Node tempNode;
-        /*
-        for(int i=0;i<parentChildren.size();i++) {
-            tempNode = parentChildren.get(i);
-            if (tempNode.getId() == nodeId) parentChildren.remove(i);
-        }*/
         int i=0;
         for(Node temp:parentChildren){
             if (temp.getId() == nodeId) parentChildren.remove(i);
@@ -221,43 +192,32 @@ public class Tree implements Serializable {
     }
 
     /**
-     * Метод для клонирования дерева
-     * @param tmp - промежуточная переменная для рекурсивного клонирования дерева
+     * Метод для рекурсивного клонирования дерева
+     * @param sourceNode - клонируемый узел
+     * @param cloneNode - клонированный узел
      * @return  - возвращает клонированное дерево
      */
     //Клонирование дерева
-    private Node clone(Node tmp){
-        if (tmp == null) {
-            return null;
-        }else
-        {
-            Collection<Node> list = tmp.getChildren();
-            for (Node child : list){
-                return clone(child.clone());
+    private void clone(Node sourceNode,Node cloneNode){
+            Node tmp=null;
+            Collection<Node> collection = sourceNode.getChildren();
+            for (Node child : collection){
+                tmp=child.clone();
+                if(sourceNode.getParent()!=null) tmp.setParent(cloneNode);
+                cloneNode.addChildren(tmp);
+                clone(child,tmp);
             }
-        }
-        return null;
     }
+
+    /**
+     * Метод клонирования дерева
+     * @return возвращает клонированное дерево
+     */
     public Tree clone(){
-        return new Tree(clone(this.getRoot()));
+        Node clonedRoot=this.root.clone();
+        clone(this.root,this.root.clone());
+        return new Tree(clonedRoot);
     }
-    //Упорядочивание дерева
-    /*public Tree orderTree(){
-        return new Tree(orderTree(this.root));
-    }
-    private Node orderTree(Node tmp){
-        if (tmp == null) {
-            return null;
-        }else
-        {
-            LinkedList<Node> list = tmp.getChildren();
-            for (Node child : list){
-                if(child.getIdNode()<tmp.getIdNode())deleteBranch(child.getIdNode());
-                else return orderTree(child.cloneNode());
-            }
-        }
-        return null;
-    }*/
     //вывод дерева на консоль
     public void outputTree(Node tmp){
         if (tmp != null&&tmp.getParent()==null){
