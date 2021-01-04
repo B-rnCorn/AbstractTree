@@ -14,6 +14,10 @@ public class Main {
             myTree.serialization("output.json");
             myTree.setRoot(null);
             myTree.deserialization("output.json");
+            Tree TreeSerial=new Tree();
+            System.out.println("serialized");
+            TreeSerial.deserialization("output.json");
+            TreeSerial.outputTree(TreeSerial.getRoot());
         }catch (TreeException e){
             System.out.println(e.getMessage());
         }
