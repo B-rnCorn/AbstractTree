@@ -8,58 +8,59 @@ import java.io.*;
 import java.util.Iterator;
 
 /**
- * Класс абстрактного дерева
- * @author Сергей
- * @author Андрей
+ * Abstract Tree Class
+ * @author Sergey
+ * @author Anrey
  * @version 1.0
  */
 public class Tree implements Serializable {
     /**
-     * Поле для корня дерева
+     * Field for tree root
      */
     private Node root;
      /**
-      *Конструктор
-      * @param root - Узел, который будет корнем дерева
+      *Constructor
+      * @param root - root node
      */
     public Tree(Node root){
         this.root = root;
     }
     /**
-     *Конструктор по умолчанию
+     *Default constructor
      * @see Tree#Tree(Node)
      */
     public Tree(){
         this(new Node());
     }
      /**
-     *метод get для корня
+     *Method for getting root
+       @return root node
      */
     public Node getRoot(){
         return root;
     }
     /**
-     *метод set для корня
-     * @param root - узел для корня дерева
+     *Method for setting root
+     * @param root - root node
      */
     public void setRoot(Node root){
         this.root=root;
     }
      /**
-     *метод удаление дерева
+     *Method for deleting Tree
      */
     public void deleteTree(){
         this.root = null;
     }
 
     /**
-     * Добавление узла к заданному Родителю
-     * @param parentID - id родителя
-     * @param addingNode - узел дерева для добавления
-     * @return - возвращает результат добавления true-добавлено, false - недобавлено
+     * Method for adding node
+     * @param id - parent id
+     * @param addingNode - node for adding
+     * @return - true if added, false - if not added
      */
-    public boolean add(int parentID, Node addingNode){
-        Node parent = search(parentID);
+    public boolean add(int id, Node addingNode){
+        Node parent = search(id);
         if(parent.getId()<=addingNode.getId()) {
             addingNode.setParent(parent);
             parent.addChildren(addingNode);
@@ -67,16 +68,16 @@ public class Tree implements Serializable {
         }else return false;
     }
     /**
-     * Удаление Узла
-     * @param nodeID - id узла для удаления
+     * Remove node
+     * @param id - id node for removing
      */
-    public void removeNodeById(int nodeID){
-        Node parent = search(root, nodeID).getParent();
-        removeSubNode(nodeID, parent);
+    public void removeNodeById(int id){
+        Node parent = search(root, id).getParent();
+        removeSubNode(id, parent);
     }
 
     /**
-     * Удаление дочернего узла
+     * Removing sub node
      * @param subNodeID
      * @param node
      */
@@ -94,8 +95,8 @@ public class Tree implements Serializable {
     }
 
     /**
-     * Расщепление ветви дерева
-     * @param id - id узла для расщепления
+     * Splitting tree branch
+     * @param id - id of node for slitting
      */
     public void splitById(int id){
         Node splittingNode=search(id);
@@ -111,9 +112,9 @@ public class Tree implements Serializable {
         removeSubNode(splittingNode.getId(), splittingNode.getParent());
     }
     /**
-     * Поиск узла по ключу
-     * @param id - id узла
-     * @return Узел с данным id или null если такого узда нет
+     * Search node by id
+     * @param id - id node
+     * @return node with given id or null if node with same id not exist
      */
     public Node search(int id){
         Node res=root;
@@ -133,8 +134,8 @@ public class Tree implements Serializable {
     }
 
     /**
-     * Метод для сериализации дерева в JSON
-     * @param fileName - имя файла для сохранения
+     * Method for serialization to JSON
+     * @param fileName - name of file for serialization
      */
     public void serialization (String fileName)throws TreeException{
         try {
@@ -147,9 +148,9 @@ public class Tree implements Serializable {
         }
     }
     /**
-     * Метод для загрузки дерева с файла
-     * @param fileName - имя файла для загрузки
-     * @return - дерево, считаннок из файла
+     * Method for deserialization from JSON
+     * @param fileName - name of file for deserialization
+     * @return - tree that deserialize from file
      */
     public void deserialization(String fileName)throws TreeException{
         Tree tree=null;
@@ -164,34 +165,44 @@ public class Tree implements Serializable {
     }
 
     /**
-     * Метод добавления узла/ветви дерева по id
-     * @param nodeId - id узла, в который добавляется ущел/ветвь
-     * @param nodeAdd - узел/ветвь для добавления
+     * Method for adding node/branch by id
+     * @param id - id destination node for adding node/branch
+     * @param nodeAdd - node/top node of branch for adding
      */
     //Добавление узла/ветви дерева
-    public void addBranch(int nodeId,Node nodeAdd){
-        Node destinationNode=search(nodeId);
+    public void addBranch(int id,Node nodeAdd){
+        Node destinationNode=search(id);
         destinationNode.addChildren(nodeAdd);
         nodeAdd.setParent(destinationNode);
     }
 
     /**
-     * Метод удаления узла по id
-     * @param nodeId - di узла, который нужно удалить
+     * Method for delete node/branch by id
+     * @param id - id node for removing
      */
     //Удаление узла/ветви дерева
-    public void deleteBranch(int nodeId){
-        Node delNode=search(nodeId);
+    public void deleteBranch(int id){
+        Node delNode=search(id);
         Collection<Node> parentChildren =delNode.getParent().getChildren();
         Node tempNode;
         int i=0;
         for(Node temp:parentChildren){
-            if (temp.getId() == nodeId) parentChildren.remove(i);
+            if (temp.getId() == id) parentChildren.remove(i);
             i++;
         }
     }
 
-    /** Метод для рекурсивного клонирования дерева
+    /**
+     * Method for clone Tree
+     * @return cloned Tree
+     */
+    public Tree clone(){
+        Node clonedRoot=this.root.clone();
+        clone(this.root,this.root.clone());
+        return new Tree(clonedRoot);
+    }
+    /** Method for recursive clone
+     * @see Tree#clone()
      * @param sourceNode - клонируемый узел
      * @param cloneNode - клонированный узел
      * @return  - возвращает клонированное дерево
@@ -206,16 +217,7 @@ public class Tree implements Serializable {
             clone(child,tmp);
         }
     }
-    /**
-     * Метод клонирования дерева
-     * @return возвращает клонированное дерево
-     */
-    public Tree clone(){
-        Node clonedRoot=this.root.clone();
-        clone(this.root,this.root.clone());
-        return new Tree(clonedRoot);
-    }
-
+    /*
     //вывод дерева на консоль
     public void outputTree(Node tmp){
         if (tmp != null&&tmp.getParent()==null){
@@ -229,5 +231,5 @@ public class Tree implements Serializable {
         for (Node child : list) {
             outputTree(child);
         }
-    }
+    }*/
 }

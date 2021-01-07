@@ -1,4 +1,5 @@
-src\main\java\com\project\abstract_tree\Main.java
+out
 *.iml 
 .idea
 output.json
+.class

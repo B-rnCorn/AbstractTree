@@ -8,9 +8,9 @@ import java.util.LinkedList;
 
 
 /**
- * Класс узла дерева
- * @author Сергей
- * @author Андрей
+ * Class of tree node
+ * @author Sergey
+ * @author Andrey
  * @version 1.0
  */
 @JsonIdentityInfo(
@@ -18,26 +18,26 @@ import java.util.LinkedList;
         property = "id")
 public class Node <T>{
     /**
-     * Поле для хранения id узла
+     * Field for node id
      */
     private int id;
     /**
-     * Поле для хранения значения узла
+     * Field for node value
      */
     private T value;
     /**
-     * Поле для хранения дчоерних узлов
+     * Field for nodes children
      */
     private Collection<Node> children;
     /**
-     * Поле для одительского узла текущей вершины
+     * Field for parent node
      */
     private Node parent;
     /**
-     *Конструктор
-     * @param id - id узла
-     * @param parent - родительский узел
-     * @param value - значение узла
+     *Constructor for creating node
+     * @param id - id node
+     * @param parent - parent node
+     * @param value - value of node
      */
     public Node(int id,T value,Node parent){
         this.id =id;
@@ -47,7 +47,7 @@ public class Node <T>{
     }
 
     /**
-     * Конструктор для создание узла-корня
+     * Constructor for creating root node
      * @param id
      * @param value
      * @see Node#Node(int, Object, Node)
@@ -57,7 +57,7 @@ public class Node <T>{
     }
 
     /**
-     * Конструктор по умолчанию
+     * Default Constructor
      * @see Node#Node(int, Object, Node)
      */
     public Node(){
@@ -65,18 +65,18 @@ public class Node <T>{
     }
 
     /**
-     * Метод добавления дочернего узла
-     * @param idNode - id узла, который добавляем
-     * @param value - значение добавляемого узла
-     * @param parent - узел, которому добавляем дочерний узел
+     * Method for adding children node
+     * @param idNode - id of adding node
+     * @param value - value of adding node
+     * @param parent - node to witch we add
      */
     public void addChildren(int idNode, T value, Node parent){
         children.add(new Node(idNode,value,parent));
     }
 
     /**
-     * Метод добавления дочернего узла к текущему узлу
-     * @param node - дочерний узел
+     * Method for adding children node
+     * @param node - children node
      */
     public void addChildren(Node node){
         node.setParent(this);
@@ -84,8 +84,8 @@ public class Node <T>{
     }
 
     /**
-     * Метод добавления коллекции узлов к текущему узлу
-     * @param children - коллекция узлов
+     * Method for adding collection of nodes
+     * @param children - collection of nodes
      */
     public void addChildren(Collection<Node> children){
         this.children=children;
@@ -95,63 +95,63 @@ public class Node <T>{
     }
 
     /**
-     * Метод получения дочерних узлов текущего узла
-     * @return - дочерние узлы текущего узла
+     * Method for getting children nodes of current node
+     * @return - children nodes
      */
     public Collection<Node> getChildren(){
         return children;
     }
 
     /**
-     * Метод получения id текущего узла
-     * @return id текущего узла
+     * Method for getting id of current node
+     * @return id node
      */
     public int getId(){
         return id;
     }
 
     /**
-     * метод установки id для текущей вершины
-     * @param idNode - id для установки
+     * Method for setting id of current node
+     * @param id - id of node
      */
-    public void setId(int idNode){
-        this.id =idNode;
+    public void setId(int id){
+        this.id =id;
     }
 
     /**
-     * получение значения текщего узла
-     * @return - значение текущего узла
+     * Method for getting values of current node
+     * @return - value of node
      */
     public T getValue() {
         return value;
     }
 
     /**
-     * установка значения для текущего узла
-     * @param value - значение для текщего узла
+     * Method for setting values of current node
+     * @param value - value of node
      */
     public void setValue(T value) {
         this.value = value;
     }
 
     /**
-     * Метод получения родительского узла для текщего узла
-     * @return - родительский узел
+     * Method for getting parent node of current node
+     * @return - parent node
      */
     public Node getParent() {
         return parent;
     }
 
     /**
-     * Метод установки родительского узла для текущего узла
-     * @param parent - родительский узел
+     * Method for setting parent node of current node
+     * @param parent - parent node
      */
     public void setParent(Node parent) {
         this.parent = parent;
     }
     /**
-     *Метод клонирование узла
-     * @return клонированное дерево
+     *Method for cloning node
+     * @return cloned node
      */
     public Node clone(){
         Node cloned= new Node (this.id,this.value);
