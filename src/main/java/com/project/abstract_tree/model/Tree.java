@@ -1,4 +1,4 @@
-package com.project.abstract_tree;
+package com.project.abstract_tree.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -137,7 +137,7 @@ public class Tree implements Serializable {
      * Method for serialization to JSON
      * @param fileName - name of file for serialization
      */
-    public void serialization (String fileName)throws TreeException{
+    public void serialization (String fileName)throws TreeException {
         try {
             FileWriter fileWriter = new FileWriter(new File(fileName),false);
             ObjectMapper mapper=new ObjectMapper();

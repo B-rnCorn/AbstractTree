@@ -1,9 +1,8 @@
-package com.project.abstract_tree;
+package com.project.abstract_tree.model;
 
 import com.fasterxml.jackson.annotation.*;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 

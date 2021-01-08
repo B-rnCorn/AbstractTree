@@ -1,10 +1,10 @@
 package com.project.abstract_tree;
 
-import junit.framework.AssertionFailedError;
+import com.project.abstract_tree.model.Node;
+import com.project.abstract_tree.model.Tree;
+import com.project.abstract_tree.model.TreeException;
 import org.junit.Assert;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class TreeTest {
 
