@@ -1,6 +1,9 @@
 package com.project.abstract_tree.model;
 
 import com.fasterxml.jackson.annotation.*;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.ApplicationScope;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -15,6 +18,8 @@ import java.util.LinkedList;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
+@Component
+@Scope("prototype")
 public class Node <T>{
     /**
      * Field for node id

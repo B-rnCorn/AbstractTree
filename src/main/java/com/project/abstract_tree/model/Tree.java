@@ -1,6 +1,8 @@
 package com.project.abstract_tree.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 
@@ -13,6 +15,7 @@ import java.util.Iterator;
  * @author Anrey
  * @version 1.0
  */
+@Component("TaskTree")
 public class Tree implements Serializable {
     /**
      * Field for tree root
@@ -22,6 +25,7 @@ public class Tree implements Serializable {
       *Constructor
       * @param root - root node
      */
+     @Autowired
     public Tree(Node root){
         this.root = root;
     }
