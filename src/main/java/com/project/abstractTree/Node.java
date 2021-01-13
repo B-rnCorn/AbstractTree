@@ -1,9 +1,8 @@
-package com.project.abstract_tree;
+package com.project.abstractTree;
 
 import com.fasterxml.jackson.annotation.*;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 
@@ -11,7 +10,7 @@ import java.util.LinkedList;
  * Class of tree node
  * @author Sergey
  * @author Andrey
- * @version 1.0
+ * @version 1.0.0
  */
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
@@ -28,22 +27,22 @@ public class Node <T>{
     /**
      * Field for nodes children
      */
-    private Collection<Node> children;
+    private Collection<Node<T>> children;
     /**
      * Field for parent node
      */
-    private Node parent;
+    private Node<T> parent;
     /**
      *Constructor for creating node
      * @param id - id node
      * @param parent - parent node
      * @param value - value of node
      */
-    public Node(int id,T value,Node parent){
+    public Node(int id,T value,Node<T> parent){
         this.id =id;
         this.value=value;
         this.parent=parent;
-        this.children = new LinkedList<Node>();
+        this.children = new LinkedList<Node<T>>();
     }
 
     /**
@@ -70,7 +69,7 @@ public class Node <T>{
      * @param value - value of adding node
      * @param parent - node to witch we add
      */
-    public void addChildren(int idNode, T value, Node parent){
+    public void addChildren(int idNode, T value, Node<T> parent){
         children.add(new Node(idNode,value,parent));
     }
 
@@ -78,7 +77,7 @@ public class Node <T>{
      * Method for adding children node
      * @param node - children node
      */
-    public void addChildren(Node node){
+    public void addChildren(Node<T> node){
         node.setParent(this);
         children.add(node);
     }
@@ -87,9 +86,9 @@ public class Node <T>{
      * Method for adding collection of nodes
      * @param children - collection of nodes
      */
-    public void addChildren(Collection<Node> children){
+    public void addChildren(Collection<Node<T>> children){
         this.children=children;
-        for (Node node:children) {
+        for (Node<T> node:children) {
             node.setParent(this);
         }
     }
@@ -98,7 +97,7 @@ public class Node <T>{
      * Method for getting children nodes of current node
      * @return - children nodes
      */
-    public Collection<Node> getChildren(){
+    public Collection<Node<T>> getChildren(){
         return children;
     }
 
@@ -138,7 +137,7 @@ public class Node <T>{
      * Method for getting parent node of current node
      * @return - parent node
      */
-    public Node getParent() {
+    public Node<T> getParent() {
         return parent;
     }
 
@@ -146,17 +145,17 @@ public class Node <T>{
      * Method for setting parent node of current node
      * @param parent - parent node
      */
-    public void setParent(Node parent) {
+    public void setParent(Node<T> parent) {
         this.parent = parent;
     }
     /**
      *Method for cloning node
      * @return cloned node
      */
-    public Node clone(){
-        Node cloned= new Node (this.id,this.value);
-        Node temp=null;
-        for(Node child:children) {
+    public Node<T> clone(){
+        Node<T> cloned= new Node (this.id,this.value);
+        Node<T> temp=null;
+        for(Node<T> child:children) {
             temp=child.clone();
             temp.setParent(cloned);
             cloned.addChildren(temp);

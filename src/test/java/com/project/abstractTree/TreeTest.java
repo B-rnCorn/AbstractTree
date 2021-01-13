@@ -1,44 +1,47 @@
-package com.project.abstract_tree;
+package com.project.abstractTree;
 
-import junit.framework.AssertionFailedError;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class TreeTest {
 
     @Test
     public void getRoot() {
-        Node expectedRootNode = new Node(0,"root");
-        Tree tree=new Tree(expectedRootNode);
+        Node<String> expectedRootNode = new Node<String>(0,"root");
+        Tree<String> tree=new Tree<String>(expectedRootNode);
         Assert.assertEquals(expectedRootNode,tree.getRoot());
     }
 
     @Test
     public void setRoot() {
-        Node expectedRootNode = new Node(0,"root");
-        Tree tree=new Tree();
+        Node<String> expectedRootNode = new Node<String>(0,"root");
+        Tree<String> tree=new Tree<String>();
         tree.setRoot(expectedRootNode);
         Assert.assertEquals(expectedRootNode,tree.getRoot());
     }
 
     @Test
     public void deleteTree() {
-        Tree tree = new Tree();
-        tree.deleteTree();
+        Tree<String> tree = new Tree<String>();
+        tree.delete();
         Assert.assertEquals(null,tree.getRoot());
     }
 
     @Test
     public void add() {
-        Tree expectedTree =new Tree();
-        Tree actualTree = new Tree(new Node<String>(0, "Корень"));
+        Tree<String> expectedTree =new Tree<String>();
+        Tree<String> actualTree = new Tree<String>(new Node<String>(0, "Корень"));
         actualTree.add(0,  new Node<String>(1,  "Ветвь 1"));
         actualTree.add(0,  new Node<String>(10, "Ветвь 2"));
         try {
-            expectedTree.deserialization("src/test/java/com/project/abstract_tree/test_add.json");
+            expectedTree.read(new FileReader("src/test/java/com/project/abstractTree/resources/testAdd.json"));
         }catch (TreeException e){
+            System.out.println(e.getMessage());
+        }catch (IOException e){
             System.out.println(e.getMessage());
         }
         Assert.assertEquals(expectedTree.getRoot().getId(),actualTree.getRoot().getId());
@@ -88,10 +91,12 @@ public class TreeTest {
         expectedTree.add(15, new Node<String>(50, "Ветвь 10"));
         Tree actualTree=new Tree();
         try {
-            expectedTree.serialization("src/test/java/com/project/abstract_tree/test_serialization.json");
-            actualTree.deserialization("src/test/java/com/project/abstract_tree/test_serialization.json");
-        }catch (TreeException e)
+            expectedTree.write(new FileWriter("src/test/java/com/project/abstractTree/resources/testSerialization.json",false));
+            actualTree.read(new FileReader("src/test/java/com/project/abstractTree/resources/testSerialization.json"));
+        }catch (IOException e)
         {
+            System.out.println(e.getMessage());
+        }catch (TreeException e){
             System.out.println(e.getMessage());
         }
         Assert.assertEquals(expectedTree.getRoot().getId(),actualTree.getRoot().getId());
@@ -123,8 +128,10 @@ public class TreeTest {
         expectedTree.add(15, new Node<String>(50, "Ветвь 10"));
         Tree actualTree=new Tree();
         try {
-            actualTree.deserialization("src/test/java/com/project/abstract_tree/test_serialization.json");
+            actualTree.read(new FileReader("src/test/java/com/project/abstractTree/resources/testSerialization.json"));
         }catch (TreeException e){
+            System.out.println(e.getMessage());
+        }catch (IOException e){
             System.out.println(e.getMessage());
         }
         Assert.assertEquals(expectedTree.getRoot().getId(),actualTree.getRoot().getId());
@@ -165,8 +172,10 @@ public class TreeTest {
         Tree actualTree=sourceTree.clone();
         Tree expectedTree=new Tree();
         try {
-            expectedTree.deserialization("src/test/java/com/project/abstract_tree/test_clone.json");
+            expectedTree.read(new FileReader("src/test/java/com/project/abstractTree/resources/testClone.json"));
         }catch (TreeException e){
+            System.out.println(e.getMessage());
+        }catch (IOException e){
             System.out.println(e.getMessage());
         }
         Assert.assertEquals(expectedTree.getRoot().getId(),actualTree.getRoot().getId());

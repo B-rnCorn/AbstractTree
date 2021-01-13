@@ -1,5 +1,6 @@
-package com.project.abstract_tree;
+package com.project.abstractTree;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Collection;
@@ -11,18 +12,26 @@ import java.util.Iterator;
  * Abstract Tree Class
  * @author Sergey
  * @author Anrey
- * @version 1.0
+ * @version 1.0.0
  */
-public class Tree implements Serializable {
+public class Tree<T> implements Serializable {
+    /**
+     * constant for error message in symbol stream input
+     */
+    final String I_ERROR_MESSAGE="Ошибка ввода с символьного потока ";
+    /**
+     * constant for error message in symbol stream output
+     */
+    final String O_ERROR_MESSAGE="Ошибка вывода в символьный поток ";
     /**
      * Field for tree root
      */
-    private Node root;
+    private Node<T> root;
      /**
       *Constructor
       * @param root - root node
      */
-    public Tree(Node root){
+    public Tree(Node<T> root){
         this.root = root;
     }
     /**
@@ -30,26 +39,26 @@ public class Tree implements Serializable {
      * @see Tree#Tree(Node)
      */
     public Tree(){
-        this(new Node());
+        this(new Node<T>());
     }
      /**
      *Method for getting root
        @return root node
      */
-    public Node getRoot(){
+    public Node<T> getRoot(){
         return root;
     }
     /**
      *Method for setting root
      * @param root - root node
      */
-    public void setRoot(Node root){
+    public void setRoot(Node<T> root){
         this.root=root;
     }
      /**
      *Method for deleting Tree
      */
-    public void deleteTree(){
+    public void delete(){
         this.root = null;
     }
 
@@ -59,8 +68,8 @@ public class Tree implements Serializable {
      * @param addingNode - node for adding
      * @return - true if added, false - if not added
      */
-    public boolean add(int id, Node addingNode){
-        Node parent = search(id);
+    public boolean add(int id, Node<T> addingNode){
+        Node<T> parent = search(id);
         if(parent.getId()<=addingNode.getId()) {
             addingNode.setParent(parent);
             parent.addChildren(addingNode);
@@ -72,22 +81,22 @@ public class Tree implements Serializable {
      * @param id - id node for removing
      */
     public void removeNodeById(int id){
-        Node parent = search(root, id).getParent();
+        Node<T> parent = search(root, id).getParent();
         removeSubNode(id, parent);
     }
 
     /**
      * Removing sub node
-     * @param subNodeID
+     * @param subNodeId
      * @param node
      */
-    public void removeSubNode(int subNodeID, Node node){
+    public void removeSubNode(int subNodeId, Node<T> node){
         //Поиск Узла среди дочерних узлов Родителя
-        Iterator iterator = node.getChildren().iterator();
+        Iterator<Node<T>> iterator = node.getChildren().iterator();
 
         while(iterator.hasNext()){
-            Node tmp = (Node) iterator.next();
-            if(tmp.getId() == subNodeID) {
+            Node<T> tmp = (Node<T>) iterator.next();
+            if(tmp.getId() == subNodeId) {
                 iterator.remove();
                 break;
             }
@@ -99,15 +108,13 @@ public class Tree implements Serializable {
      * @param id - id of node for slitting
      */
     public void splitById(int id){
-        Node splittingNode=search(id);
+        Node<T> splittingNode=search(id);
         int parentId = splittingNode.getParent().getId();
-
         //Добавить дочерние узлы Разделяемого Узла в список дочерних узлов Родительского Узла
-        Collection<Node> collection = splittingNode.getChildren();
-        for (Node child : collection){
+        Collection<Node<T>> collection = splittingNode.getChildren();
+        for (Node<T> child : collection){
             add(parentId, child);
         }
-
         //Удалить текущий узел из списка дочерних узлов Родителя
         removeSubNode(splittingNode.getId(), splittingNode.getParent());
     }
@@ -116,50 +123,44 @@ public class Tree implements Serializable {
      * @param id - id node
      * @return node with given id or null if node with same id not exist
      */
-    public Node search(int id){
-        Node res=root;
+    public Node<T> search(int id){
+        Node<T> res=root;
         return res=search(res,id);
     }
-    private Node search(Node tmp, int nodeId){
-        Node result=tmp;
+    private Node<T> search(Node<T> tmp, int nodeId){
+        Node<T> result=tmp;
         if (tmp.getId() == nodeId) {
             return result;
         }
-            Collection<Node> list = tmp.getChildren();
-            for (Node child : list) {
+            Collection<Node<T>> list = tmp.getChildren();
+            for (Node<T> child : list) {
                 result = search(child, nodeId);
                 if (result.getId() == nodeId) return result;
             }
         return result;
     }
-
     /**
-     * Method for serialization to JSON
-     * @param fileName - name of file for serialization
+     * Method for writing tree with using Writer
+     * @param writer - writer for writing tree to receiver
      */
-    public void serialization (String fileName)throws TreeException{
+    public void write(Writer writer)throws TreeException{
         try {
-            FileWriter fileWriter = new FileWriter(new File(fileName),false);
-            ObjectMapper mapper=new ObjectMapper();
-            mapper.writeValue(fileWriter,this);
-            fileWriter.close();
+            writer.write(this.toString());
         }catch (IOException e){
-            throw new TreeException("Не удалось записать в файл: "+ fileName);
+            throw new TreeException(O_ERROR_MESSAGE);
         }
     }
     /**
-     * Method for deserialization from JSON
-     * @param fileName - name of file for deserialization
-     * @return - tree that deserialize from file
+     * Method for reading tree with using Reader
+     * @param reader - reader for reading tree from source
      */
-    public void deserialization(String fileName)throws TreeException{
-        Tree tree=null;
+    public void read(Reader reader)throws TreeException{
+        Tree<T> tree;
         try {
-            FileReader fileReader = new FileReader(new File(fileName));
             ObjectMapper mapper=new ObjectMapper();
-            tree=mapper.readValue(fileReader,Tree.class);
+            tree=mapper.readValue(reader,Tree.class);
         }catch (IOException e){
-            throw new TreeException("Не удалось считать файл: "+fileName);
+            throw new TreeException(I_ERROR_MESSAGE);
         }
         this.root=tree.getRoot();
     }
@@ -170,8 +171,8 @@ public class Tree implements Serializable {
      * @param nodeAdd - node/top node of branch for adding
      */
     //Добавление узла/ветви дерева
-    public void addBranch(int id,Node nodeAdd){
-        Node destinationNode=search(id);
+    public void addBranch(int id,Node<T> nodeAdd){
+        Node<T> destinationNode=search(id);
         destinationNode.addChildren(nodeAdd);
         nodeAdd.setParent(destinationNode);
     }
@@ -182,11 +183,11 @@ public class Tree implements Serializable {
      */
     //Удаление узла/ветви дерева
     public void deleteBranch(int id){
-        Node delNode=search(id);
-        Collection<Node> parentChildren =delNode.getParent().getChildren();
-        Node tempNode;
+        Node<T> delNode=search(id);
+        Collection<Node<T>> parentChildren =delNode.getParent().getChildren();
+        Node<T> tempNode;
         int i=0;
-        for(Node temp:parentChildren){
+        for(Node<T> temp:parentChildren){
             if (temp.getId() == id) parentChildren.remove(i);
             i++;
         }
@@ -194,10 +195,31 @@ public class Tree implements Serializable {
 
     /**
      * Method for clone Tree
-     * @return cloned Tree
+     * @return cloned Tree or null if clone not supported
      */
-    public Tree clone(){
-        Node clonedRoot=this.root.clone();
+    public Tree<T> clone(){
+        try {
+            return new Tree<T>((Node<T>)super.clone());
+        }catch (CloneNotSupportedException e){
+            return null;
+        }
+    }
+
+    /**
+     * Method for converting Tree to String in JSON format
+     * @return Tree as String
+     */
+    @Override
+    public String toString(){
+        ObjectMapper mapper=new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(this);
+        }catch (JsonProcessingException e){
+            return null;
+        }
+    }
+    /*
+        Node<T> clonedRoot=this.root.clone();
         clone(this.root,this.root.clone());
         return new Tree(clonedRoot);
     }
@@ -206,17 +228,16 @@ public class Tree implements Serializable {
      * @param sourceNode - клонируемый узел
      * @param cloneNode - клонированный узел
      * @return  - возвращает клонированное дерево
-     */
-    private void clone(Node sourceNode,Node cloneNode){
-        Node tmp=null;
-        Collection<Node> collection = sourceNode.getChildren();
-        for (Node child : collection){
+    private void clone(Node<T> sourceNode,Node<T> cloneNode){
+        Node<T> tmp=null;
+        Collection<Node<T>> collection = sourceNode.getChildren();
+        for (Node<T> child : collection){
             tmp=child.clone();
             if(sourceNode.getParent()!=null) tmp.setParent(cloneNode);
             cloneNode.addChildren(tmp);
             clone(child,tmp);
         }
-    }
+    }*/
     /*
     //вывод дерева на консоль
     public void outputTree(Node tmp){
