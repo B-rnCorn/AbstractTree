@@ -26,32 +26,6 @@ public class TreeTest {
         expectedTree.add(15, new Node<String>(50, "Ветвь 10"));
     }
 
-    @Before
-    public void createTestFile() {
-        Tree<String> expectedTree = new Tree<String>(new Node<String>(0, "Корень"));
-        expectedTree.add(0, new Node<String>(1, "Ветвь 1"));
-        expectedTree.add(1, new Node<String>(6, "Ветвь 3"));
-        expectedTree.add(1, new Node<String>(4, "Ветвь 4"));
-        expectedTree.add(0, new Node<String>(10, "Ветвь 2"));
-        expectedTree.add(6, new Node<String>(8, "Ветвь"));
-        expectedTree.add(8, new Node<String>(9, "Ветвь"));
-        expectedTree.add(10, new Node<String>(11, "Ветвь 5"));
-        expectedTree.add(10, new Node<String>(20, "Ветвь 6"));
-        expectedTree.add(10, new Node<String>(12, "Ветвь 7"));
-        expectedTree.add(11, new Node<String>(15, "Ветвь 8"));
-        expectedTree.add(11, new Node<String>(30, "Ветвь 9"));
-        expectedTree.add(15, new Node<String>(50, "Ветвь 10"));
-        try {
-            FileWriter fileWriter = new FileWriter("src/test/java/com/project/abstractTree/resources/testDeleteBranch.json", false);
-            expectedTree.write(fileWriter);
-            fileWriter.close();
-        } catch (TreeException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
     @Test
     public void getRoot() {
         Node<String> expectedRootNode = new Node<String>(0, "Корень");
