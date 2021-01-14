@@ -10,211 +10,263 @@ import java.util.Iterator;
 
 /**
  * Abstract Tree Class
+ *
  * @author Sergey
  * @author Anrey
  * @version 1.0.0
  */
-public class Tree<T> implements Serializable {
+public class Tree<T> implements Serializable, Cloneable {
     /**
      * constant for error message in symbol stream input
      */
-    final String I_ERROR_MESSAGE="Ошибка ввода с символьного потока ";
+    final String I_ERROR_MESSAGE = "Ошибка ввода с символьного потока ";
     /**
      * constant for error message in symbol stream output
      */
-    final String O_ERROR_MESSAGE="Ошибка вывода в символьный поток ";
+    final String O_ERROR_MESSAGE = "Ошибка вывода в символьный поток ";
+    /**
+     * constant for error message in adding branch
+     */
+    final String ADDING_BRANCH_ERROR = "Вершина ветви не соответствует уловию упорядоченности дерева";
     /**
      * Field for tree root
      */
     private Node<T> root;
-     /**
-      *Constructor
-      * @param root - root node
-     */
-    public Tree(Node<T> root){
-        this.root = root;
-    }
+
     /**
-     *Default constructor
-     * @see Tree#Tree(Node)
-     */
-    public Tree(){
-        this(new Node<T>());
-    }
-     /**
-     *Method for getting root
-       @return root node
-     */
-    public Node<T> getRoot(){
-        return root;
-    }
-    /**
-     *Method for setting root
+     * Constructor
+     *
      * @param root - root node
      */
-    public void setRoot(Node<T> root){
-        this.root=root;
+    public Tree(Node<T> root) {
+        this.root = root;
     }
-     /**
-     *Method for deleting Tree
+
+    /**
+     * Default constructor
+     *
+     * @see Tree#Tree(Node)
      */
-    public void delete(){
+    public Tree() {
+        this(new Node<T>());
+    }
+
+    /**
+     * Method for getting root
+     *
+     * @return root node
+     */
+    public Node<T> getRoot() {
+        return root;
+    }
+
+    /**
+     * Method for setting root
+     *
+     * @param root - root node
+     */
+    public void setRoot(Node<T> root) {
+        this.root = root;
+    }
+
+    /**
+     * Method for deleting Tree
+     */
+    public void delete() {
         this.root = null;
     }
 
     /**
      * Method for adding node
-     * @param id - parent id
+     *
+     * @param id         - parent id
      * @param addingNode - node for adding
      * @return - true if added, false - if not added
      */
-    public boolean add(int id, Node<T> addingNode){
+    public boolean add(int id, Node<T> addingNode) {
         Node<T> parent = search(id);
-        if(parent.getId()<=addingNode.getId()) {
+        if (parent.getId() <= addingNode.getId()) {
             addingNode.setParent(parent);
             parent.addChildren(addingNode);
             return true;
-        }else return false;
+        } else return false;
     }
+
     /**
      * Remove node
+     *
      * @param id - id node for removing
      */
-    public void removeNodeById(int id){
+    public void removeNodeById(int id) {
         Node<T> parent = search(root, id).getParent();
         removeSubNode(id, parent);
     }
 
     /**
-     * Removing sub node
-     * @param subNodeId
-     * @param node
+     * Removing node from the parent's collection of child nodes
+     *
+     * @param subNodeId - id of removing node
+     * @param node      - parent node
      */
-    public void removeSubNode(int subNodeId, Node<T> node){
+    public boolean removeSubNode(int subNodeId, Node<T> node) {
         //Поиск Узла среди дочерних узлов Родителя
         Iterator<Node<T>> iterator = node.getChildren().iterator();
 
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             Node<T> tmp = (Node<T>) iterator.next();
-            if(tmp.getId() == subNodeId) {
+            if (tmp.getId() == subNodeId) {
                 iterator.remove();
-                break;
+                return true;
             }
         }
+        return false;
     }
 
     /**
      * Splitting tree branch
+     *
      * @param id - id of node for slitting
      */
-    public void splitById(int id){
-        Node<T> splittingNode=search(id);
+    public void splitById(int id) {
+        Node<T> splittingNode = search(id).clone();
         int parentId = splittingNode.getParent().getId();
         //Добавить дочерние узлы Разделяемого Узла в список дочерних узлов Родительского Узла
+        removeNodeById(id);
         Collection<Node<T>> collection = splittingNode.getChildren();
-        for (Node<T> child : collection){
+        for (Node<T> child : collection) {
             add(parentId, child);
         }
         //Удалить текущий узел из списка дочерних узлов Родителя
-        removeSubNode(splittingNode.getId(), splittingNode.getParent());
+        //removeSubNode(splittingNode.getId(), splittingNode.getParent());
     }
+
     /**
      * Search node by id
+     *
      * @param id - id node
      * @return node with given id or null if node with same id not exist
      */
-    public Node<T> search(int id){
-        Node<T> res=root;
-        return res=search(res,id);
+    public Node<T> search(int id) {
+        Node<T> res = root;
+        res = search(res, id);
+        if (res.getId() == id) return res;
+        else return null;
     }
-    private Node<T> search(Node<T> tmp, int nodeId){
-        Node<T> result=tmp;
+
+    private Node<T> search(Node<T> tmp, int nodeId) {
+        Node<T> result = tmp;
         if (tmp.getId() == nodeId) {
             return result;
         }
-            Collection<Node<T>> list = tmp.getChildren();
-            for (Node<T> child : list) {
-                result = search(child, nodeId);
-                if (result.getId() == nodeId) return result;
-            }
+        Collection<Node<T>> list = tmp.getChildren();
+        for (Node<T> child : list) {
+            result = search(child, nodeId);
+            if (result.getId() == nodeId) return result;
+        }
         return result;
     }
+
     /**
      * Method for writing tree with using Writer
+     *
      * @param writer - writer for writing tree to receiver
      */
-    public void write(Writer writer)throws TreeException{
+    public void write(Writer writer) throws TreeException {
         try {
             writer.write(this.toString());
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new TreeException(O_ERROR_MESSAGE);
         }
     }
+
     /**
      * Method for reading tree with using Reader
+     *
      * @param reader - reader for reading tree from source
      */
-    public void read(Reader reader)throws TreeException{
+    public void read(Reader reader) throws TreeException {
         Tree<T> tree;
         try {
-            ObjectMapper mapper=new ObjectMapper();
-            tree=mapper.readValue(reader,Tree.class);
-        }catch (IOException e){
+            ObjectMapper mapper = new ObjectMapper();
+            tree = mapper.readValue(reader, Tree.class);
+        } catch (IOException e) {
             throw new TreeException(I_ERROR_MESSAGE);
         }
-        this.root=tree.getRoot();
+        this.root = tree.getRoot();
     }
 
     /**
      * Method for adding node/branch by id
-     * @param id - id destination node for adding node/branch
+     *
+     * @param id      - id destination node for adding node/branch
      * @param nodeAdd - node/top node of branch for adding
      */
     //Добавление узла/ветви дерева
-    public void addBranch(int id,Node<T> nodeAdd){
+    public void addBranch(int id, Node<T> nodeAdd) throws TreeException {
+        /*
         Node<T> destinationNode=search(id);
         destinationNode.addChildren(nodeAdd);
-        nodeAdd.setParent(destinationNode);
+        nodeAdd.setParent(destinationNode);*/
+        Node<T> destinationNode = search(id).clone();
+        if (add(id, nodeAdd)) {
+            if (destinationNode.getChildren() != null) {
+                Collection<Node<T>> children = destinationNode.getChildren();
+                for (Node<T> child : children) {
+                    addBranch(nodeAdd.getId(), child);
+                }
+            }
+        } else throw new TreeException(ADDING_BRANCH_ERROR);
     }
 
     /**
      * Method for delete node/branch by id
+     *
      * @param id - id node for removing
      */
     //Удаление узла/ветви дерева
-    public void deleteBranch(int id){
-        Node<T> delNode=search(id);
-        Collection<Node<T>> parentChildren =delNode.getParent().getChildren();
+    public void deleteBranch(int id) {
+        Node<T> delNode = search(id);
+        Node<T> parent = delNode.getParent();
+        if(delNode.getParent()!=null){
+            Collection<Node<T>> children = parent.getChildren();
+            for (Node<T> child : children) {
+                if(child.getId()==id)child=null;
+            }
+        }
+        /*
+        Collection<Node<T>> parentChildren = delNode.getParent().getChildren();
         Node<T> tempNode;
-        int i=0;
-        for(Node<T> temp:parentChildren){
+        int i = 0;
+        for (Node<T> temp : parentChildren) {
             if (temp.getId() == id) parentChildren.remove(i);
             i++;
-        }
+        }*/
     }
 
     /**
      * Method for clone Tree
+     *
      * @return cloned Tree or null if clone not supported
      */
-    public Tree<T> clone(){
+    public Tree<T> clone() {
         try {
-            return new Tree<T>((Node<T>)super.clone());
-        }catch (CloneNotSupportedException e){
+            return (Tree<T>) super.clone();
+        } catch (CloneNotSupportedException e) {
             return null;
         }
     }
 
     /**
      * Method for converting Tree to String in JSON format
+     *
      * @return Tree as String
      */
     @Override
-    public String toString(){
-        ObjectMapper mapper=new ObjectMapper();
+    public String toString() {
+        ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(this);
-        }catch (JsonProcessingException e){
+        } catch (JsonProcessingException e) {
             return null;
         }
     }
