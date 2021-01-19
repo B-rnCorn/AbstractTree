@@ -14,8 +14,7 @@ public class Launcher extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass()
-                .getResource("/view/fxml/main.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/view/fxml/launcher.fxml"));
         primaryStage.setTitle("Best task manager");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
