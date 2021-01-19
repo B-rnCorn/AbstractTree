@@ -11,6 +11,20 @@ import java.io.IOException;
 public class TreeTest {
     private Tree<String> expectedTree;
 
+    private Tree<String> readTreeFile(String nameOfFile) {
+        Tree<String> actualTree = new Tree<String>();
+        try {
+            FileReader fileReader = new FileReader(String.format("src/test/java/com/project/abstractTree/resources/%s", nameOfFile));
+            actualTree.read(fileReader);
+            fileReader.close();
+        } catch (TreeException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return actualTree;
+    }
+
     @Before
     public void init() {
         expectedTree = new Tree<String>(new Node<String>(0, "Корень"));
@@ -48,16 +62,7 @@ public class TreeTest {
 
     @Test
     public void add() {
-        Tree<String> actualTree = new Tree<String>();
-        try {
-            FileReader fileReader = new FileReader("src/test/java/com/project/abstractTree/resources/testAdd.json");
-            actualTree.read(fileReader);
-            fileReader.close();
-        } catch (TreeException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+        Tree<String> actualTree = readTreeFile(ResourceFileName.TEST_ADD);
         actualTree.add(15, new Node<String>(50, "Ветвь 10"));
         actualTree.add(10, new Node<String>(20, "Ветвь 6"));
         Assert.assertEquals(expectedTree.getRoot().getId(), actualTree.getRoot().getId());
@@ -67,16 +72,7 @@ public class TreeTest {
 
     @Test
     public void removeNodeById() {
-        Tree<String> actualTree = new Tree<String>();
-        try {
-            FileReader fileReader = new FileReader("src/test/java/com/project/abstractTree/resources/testRemoveById.json");
-            actualTree.read(fileReader);
-            fileReader.close();
-        } catch (TreeException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+        Tree<String> actualTree = readTreeFile(ResourceFileName.TEST_REMOVE_BY_ID);
         actualTree.removeNodeById(25);
         actualTree.removeNodeById(31);
         Assert.assertEquals(expectedTree.getRoot().getId(), actualTree.getRoot().getId());
@@ -96,16 +92,7 @@ public class TreeTest {
 
     @Test
     public void splitById() {
-        Tree<String> actualTree = new Tree<String>();
-        try {
-            FileReader fileReader = new FileReader("src/test/java/com/project/abstractTree/resources/testSplitById.json");
-            actualTree.read(fileReader);
-            fileReader.close();
-        } catch (TreeException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+        Tree<String> actualTree = readTreeFile(ResourceFileName.TEST_SPLIT_BY_ID);
         actualTree.splitById(5);
         Assert.assertEquals(expectedTree.search(1).getValue(), actualTree.search(1).getValue());
         Assert.assertEquals(expectedTree.search(6).getValue(), actualTree.search(6).getValue());
@@ -127,19 +114,16 @@ public class TreeTest {
 
     @Test
     public void write() {
-        Tree<String> actualTree = new Tree<String>();
         try {
             FileWriter fileWriter = new FileWriter("src/test/java/com/project/abstractTree/resources/testIO.json", false);
             expectedTree.write(fileWriter);
             fileWriter.close();
-            FileReader fileReader = new FileReader("src/test/java/com/project/abstractTree/resources/testIO.json");
-            actualTree.read(fileReader);
-            fileReader.close();
         } catch (IOException e) {
             System.out.println(e.getMessage());
         } catch (TreeException e) {
             System.out.println(e.getMessage());
         }
+        Tree<String> actualTree = readTreeFile(ResourceFileName.TEST_IO);
         Assert.assertEquals(expectedTree.getRoot().getId(), actualTree.getRoot().getId());
         Assert.assertEquals(expectedTree.search(1).getValue(), actualTree.search(1).getValue());
         Assert.assertEquals(expectedTree.search(10).getValue(), actualTree.search(10).getValue());
@@ -156,16 +140,7 @@ public class TreeTest {
 
     @Test
     public void read() {
-        Tree<String> actualTree = new Tree<String>();
-        try {
-            FileReader fileReader = new FileReader("src/test/java/com/project/abstractTree/resources/testIO.json");
-            actualTree.read(fileReader);
-            fileReader.close();
-        } catch (TreeException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+        Tree<String> actualTree = readTreeFile(ResourceFileName.TEST_IO);
         Assert.assertEquals(expectedTree.getRoot().getId(), actualTree.getRoot().getId());
         Assert.assertEquals(expectedTree.search(1).getValue(), actualTree.search(1).getValue());
         Assert.assertEquals(expectedTree.search(10).getValue(), actualTree.search(10).getValue());
@@ -181,23 +156,14 @@ public class TreeTest {
 
     @Test
     public void addBranch() {
-        Tree<String> actualTree = new Tree<String>();
-        try {
-            FileReader fileReader = new FileReader("src/test/java/com/project/abstractTree/resources/testAddBranch.json");
-            actualTree.read(fileReader);
-            fileReader.close();
-        } catch (TreeException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+        Tree<String> actualTree = readTreeFile(ResourceFileName.TEST_ADD_BRANCH);
         Tree<String> addingNodes = new Tree<String>();
-        addingNodes.setRoot(new Node<String>(1,"Ветвь 1"));
-        addingNodes.add(1,new Node<String>(6,"Ветвь 3"));
-        addingNodes.add(1,new Node<String>(4,"Ветвь 4"));
+        addingNodes.setRoot(new Node<String>(1, "Ветвь 1"));
+        addingNodes.add(1, new Node<String>(6, "Ветвь 3"));
+        addingNodes.add(1, new Node<String>(4, "Ветвь 4"));
         try {
             actualTree.addBranch(0, addingNodes.getRoot());
-        }catch (TreeException e){
+        } catch (TreeException e) {
             System.out.println(e.getMessage());
         }
         Assert.assertEquals(expectedTree.getRoot().getId(), actualTree.getRoot().getId());
@@ -215,16 +181,7 @@ public class TreeTest {
 
     @Test
     public void deleteBranch() {
-        Tree<String> actualTree = new Tree<String>();
-        try {
-            FileReader fileReader = new FileReader("src/test/java/com/project/abstractTree/resources/testDeleteBranch.json");
-            actualTree.read(fileReader);
-            fileReader.close();
-        } catch (TreeException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+        Tree<String> actualTree = readTreeFile(ResourceFileName.TEST_DELETE_BRANCH);
         actualTree.deleteBranch(8);
         Assert.assertEquals(expectedTree.getRoot().getId(), actualTree.getRoot().getId());
         Assert.assertEquals(expectedTree.search(1).getValue(), actualTree.search(1).getValue());
@@ -240,7 +197,7 @@ public class TreeTest {
     }
 
     @Test
-    public void testClone() {
+    public void Clone() {
         Tree<String> actualTree = expectedTree.clone();
         Assert.assertEquals(expectedTree.getRoot().getId(), actualTree.getRoot().getId());
         Assert.assertEquals(expectedTree.search(1).getValue(), actualTree.search(1).getValue());
