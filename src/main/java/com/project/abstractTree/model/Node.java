@@ -1,6 +1,7 @@
-package com.project.abstractTree;
+package com.project.abstractTree.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -51,8 +52,8 @@ public class Node<T> implements Cloneable {
     /**
      * Constructor for creating root node
      *
-     * @param id
-     * @param value
+     * @param id    - id of node
+     * @param value - value of node
      * @see Node#Node(int, Object, Node)
      */
     public Node(int id, T value) {
@@ -76,7 +77,7 @@ public class Node<T> implements Cloneable {
      * @param parent - node to witch we add
      */
     public void addChildren(int idNode, T value, Node<T> parent) {
-        children.add(new Node(idNode, value, parent));
+        children.add(new Node<T>(idNode, value, parent));
     }
 
     /**
@@ -170,19 +171,13 @@ public class Node<T> implements Cloneable {
      * @return cloned node
      */
     public Node<T> clone() {
-        /*
-        Node<T> cloned= new Node (this.id,this.value);
-        Node<T> temp=null;
-        for(Node<T> child:children) {
-            temp=child.clone();
+        Node<T> cloned = new Node<T>(this.id, this.value);
+        Node<T> temp;
+        for (Node<T> child : children) {
+            temp = child.clone();
             temp.setParent(cloned);
             cloned.addChildren(temp);
         }
-        return cloned;*/
-        try {
-            return (Node<T>) super.clone();
-        } catch (CloneNotSupportedException e) {
-            return null;
-        }
+        return cloned;
     }
 }

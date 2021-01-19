@@ -1,11 +1,15 @@
-package com.project.abstractTree;
+package com.project.abstractTree.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.abstractTree.exceptions.ErrorMessage;
+import com.project.abstractTree.exceptions.TreeException;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Serializable;
+import java.io.Writer;
 import java.util.Collection;
-
-import java.io.*;
 import java.util.Iterator;
 
 /**
@@ -16,18 +20,6 @@ import java.util.Iterator;
  * @version 1.0.0
  */
 public class Tree<T> implements Serializable, Cloneable {
-    /**
-     * constant for error message in symbol stream input
-     */
-    final String I_ERROR_MESSAGE = "Ошибка ввода с символьного потока ";
-    /**
-     * constant for error message in symbol stream output
-     */
-    final String O_ERROR_MESSAGE = "Ошибка вывода в символьный поток ";
-    /**
-     * constant for error message in adding branch
-     */
-    final String ADDING_BRANCH_ERROR = "Вершина ветви не соответствует уловию упорядоченности дерева";
     /**
      * Field for tree root
      */
@@ -109,7 +101,6 @@ public class Tree<T> implements Serializable, Cloneable {
      * @param node      - parent node
      */
     public boolean removeSubNode(int subNodeId, Node<T> node) {
-        //Поиск Узла среди дочерних узлов Родителя
         Iterator<Node<T>> iterator = node.getChildren().iterator();
 
         while (iterator.hasNext()) {
@@ -130,14 +121,11 @@ public class Tree<T> implements Serializable, Cloneable {
     public void splitById(int id) {
         Node<T> splittingNode = search(id).clone();
         int parentId = splittingNode.getParent().getId();
-        //Добавить дочерние узлы Разделяемого Узла в список дочерних узлов Родительского Узла
         removeNodeById(id);
         Collection<Node<T>> collection = splittingNode.getChildren();
         for (Node<T> child : collection) {
             add(parentId, child);
         }
-        //Удалить текущий узел из списка дочерних узлов Родителя
-        //removeSubNode(splittingNode.getId(), splittingNode.getParent());
     }
 
     /**
@@ -175,7 +163,7 @@ public class Tree<T> implements Serializable, Cloneable {
         try {
             writer.write(this.toString());
         } catch (IOException e) {
-            throw new TreeException(O_ERROR_MESSAGE);
+            throw new TreeException(ErrorMessage.O_ERROR_MESSAGE, e);
         }
     }
 
@@ -190,7 +178,7 @@ public class Tree<T> implements Serializable, Cloneable {
             ObjectMapper mapper = new ObjectMapper();
             tree = mapper.readValue(reader, Tree.class);
         } catch (IOException e) {
-            throw new TreeException(I_ERROR_MESSAGE);
+            throw new TreeException(ErrorMessage.I_ERROR_MESSAGE, e);
         }
         this.root = tree.getRoot();
     }
@@ -201,12 +189,7 @@ public class Tree<T> implements Serializable, Cloneable {
      * @param id      - id destination node for adding node/branch
      * @param nodeAdd - node/top node of branch for adding
      */
-    //Добавление узла/ветви дерева
     public void addBranch(int id, Node<T> nodeAdd) throws TreeException {
-        /*
-        Node<T> destinationNode=search(id);
-        destinationNode.addChildren(nodeAdd);
-        nodeAdd.setParent(destinationNode);*/
         Node<T> destinationNode = search(id).clone();
         if (add(id, nodeAdd)) {
             if (destinationNode.getChildren() != null) {
@@ -215,7 +198,7 @@ public class Tree<T> implements Serializable, Cloneable {
                     addBranch(nodeAdd.getId(), child);
                 }
             }
-        } else throw new TreeException(ADDING_BRANCH_ERROR);
+        } else throw new TreeException(ErrorMessage.ADDING_BRANCH_ERROR);
     }
 
     /**
@@ -223,24 +206,15 @@ public class Tree<T> implements Serializable, Cloneable {
      *
      * @param id - id node for removing
      */
-    //Удаление узла/ветви дерева
     public void deleteBranch(int id) {
         Node<T> delNode = search(id);
         Node<T> parent = delNode.getParent();
-        if(delNode.getParent()!=null){
+        if (delNode.getParent() != null) {
             Collection<Node<T>> children = parent.getChildren();
             for (Node<T> child : children) {
-                if(child.getId()==id)child=null;
+                if (child.getId() == id) child = null;
             }
         }
-        /*
-        Collection<Node<T>> parentChildren = delNode.getParent().getChildren();
-        Node<T> tempNode;
-        int i = 0;
-        for (Node<T> temp : parentChildren) {
-            if (temp.getId() == id) parentChildren.remove(i);
-            i++;
-        }*/
     }
 
     /**
@@ -249,10 +223,26 @@ public class Tree<T> implements Serializable, Cloneable {
      * @return cloned Tree or null if clone not supported
      */
     public Tree<T> clone() {
-        try {
-            return (Tree<T>) super.clone();
-        } catch (CloneNotSupportedException e) {
-            return null;
+        Node<T> clonedRoot = this.root.clone();
+        clone(this.root, this.root.clone());
+        return new Tree<T>(clonedRoot);
+    }
+
+    /**
+     * Method for recursive clone
+     *
+     * @param sourceNode - cloneable node
+     * @param cloneNode  - cloned node
+     * @see Tree#clone()
+     */
+    private void clone(Node<T> sourceNode, Node<T> cloneNode) {
+        Node<T> tmp;
+        Collection<Node<T>> collection = sourceNode.getChildren();
+        for (Node<T> child : collection) {
+            tmp = child.clone();
+            if (sourceNode.getParent() != null) tmp.setParent(cloneNode);
+            cloneNode.addChildren(tmp);
+            clone(child, tmp);
         }
     }
 
@@ -270,39 +260,4 @@ public class Tree<T> implements Serializable, Cloneable {
             return null;
         }
     }
-    /*
-        Node<T> clonedRoot=this.root.clone();
-        clone(this.root,this.root.clone());
-        return new Tree(clonedRoot);
-    }
-    /** Method for recursive clone
-     * @see Tree#clone()
-     * @param sourceNode - клонируемый узел
-     * @param cloneNode - клонированный узел
-     * @return  - возвращает клонированное дерево
-    private void clone(Node<T> sourceNode,Node<T> cloneNode){
-        Node<T> tmp=null;
-        Collection<Node<T>> collection = sourceNode.getChildren();
-        for (Node<T> child : collection){
-            tmp=child.clone();
-            if(sourceNode.getParent()!=null) tmp.setParent(cloneNode);
-            cloneNode.addChildren(tmp);
-            clone(child,tmp);
-        }
-    }*/
-    /*
-    //вывод дерева на консоль
-    public void outputTree(Node tmp){
-        if (tmp != null&&tmp.getParent()==null){
-            System.out.println("ID: "+tmp.getId()+" Value: "+tmp.getValue());
-        }
-        if (tmp != null&&tmp.getParent()!=null) {
-            System.out.println("ID: "+tmp.getId()+" Value: "+tmp.getValue()+" Parent: "+tmp.getParent().getId());
-        }
-        //Рекурсивно искать Узел среди дочерних узлов
-        Collection<Node> list = tmp.getChildren();
-        for (Node child : list) {
-            outputTree(child);
-        }
-    }*/
 }
