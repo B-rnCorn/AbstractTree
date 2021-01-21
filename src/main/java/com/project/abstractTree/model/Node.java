@@ -171,7 +171,7 @@ public class Node<T> implements Cloneable {
      * @return cloned node
      */
     public Node<T> clone() {
-        Node<T> cloned = new Node<T>(this.id, this.value);
+        Node<T> cloned = new Node<T>(this.id, this.value, this.parent);
         Node<T> temp;
         for (Node<T> child : children) {
             temp = child.clone();
