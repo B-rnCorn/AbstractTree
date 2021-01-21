@@ -1,5 +1,9 @@
 package com.project.abstractTree;
 
+
+import com.project.abstractTree.exceptions.TreeException;
+import com.project.abstractTree.model.Node;
+import com.project.abstractTree.model.Tree;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
