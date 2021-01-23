@@ -1,4 +1,4 @@
-package com.project.abstract_tree.model;
+package com.project.abstractTree.model;
 
 import java.util.Date;
 

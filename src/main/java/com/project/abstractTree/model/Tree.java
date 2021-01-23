@@ -1,12 +1,11 @@
-package com.project.abstract_tree.model;
+package com.project.abstractTree.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-
 import java.io.*;
+import java.util.Collection;
 import java.util.Iterator;
 
 /**

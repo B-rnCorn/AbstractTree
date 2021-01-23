@@ -1,4 +1,4 @@
-package com.project.abstract_tree.model;
+package com.project.abstractTree.model;
 
 /**
  * Исключение, выбрасывающееся при возникновении исключительных ситуаций, свзяанных с деревом

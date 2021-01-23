@@ -1,7 +1,7 @@
-package com.project.abstract_tree.app.controller;
+package com.project.abstractTree.client.controller;
 
-import com.project.abstract_tree.model.Node;
-import com.project.abstract_tree.model.Tree;
+import com.project.abstractTree.model.Node;
+import com.project.abstractTree.model.Tree;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeItem;

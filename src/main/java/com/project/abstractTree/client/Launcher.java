@@ -1,4 +1,4 @@
-package com.project.abstract_tree.app;
+package com.project.abstractTree.client;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

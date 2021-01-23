@@ -1,8 +1,8 @@
 package com.project.abstract_tree;
 
-import com.project.abstract_tree.model.Node;
-import com.project.abstract_tree.model.Tree;
-import com.project.abstract_tree.model.TreeException;
+import com.project.abstractTree.model.Node;
+import com.project.abstractTree.model.Tree;
+import com.project.abstractTree.model.TreeException;
 import org.junit.Assert;
 import org.junit.Test;
 
