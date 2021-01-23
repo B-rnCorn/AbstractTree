@@ -2,8 +2,6 @@ package com.project.abstractTree.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -11,16 +9,15 @@ import java.util.LinkedList;
 
 /**
  * Class of tree node
+ *
  * @author Sergey
  * @author Andrey
- * @version 1.0
+ * @version 1.0.0
  */
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
-@Component
-@Scope("prototype")
-public class Node <T>{
+public class Node<T> implements Cloneable {
     /**
      * Field for node id
      */
@@ -32,98 +29,109 @@ public class Node <T>{
     /**
      * Field for nodes children
      */
-    private Collection<Node> children;
+    private Collection<Node<T>> children;
     /**
      * Field for parent node
      */
-    private Node parent;
+    private Node<T> parent;
+
     /**
-     *Constructor for creating node
-     * @param id - id node
+     * Constructor for creating node
+     *
+     * @param id     - id node
      * @param parent - parent node
-     * @param value - value of node
+     * @param value  - value of node
      */
-    public Node(int id,T value,Node parent){
-        this.id =id;
-        this.value=value;
-        this.parent=parent;
-        this.children = new LinkedList<Node>();
+    public Node(int id, T value, Node<T> parent) {
+        this.id = id;
+        this.value = value;
+        this.parent = parent;
+        this.children = new LinkedList<Node<T>>();
     }
 
     /**
      * Constructor for creating root node
-     * @param id
-     * @param value
+     *
+     * @param id    - id of node
+     * @param value - value of node
      * @see Node#Node(int, Object, Node)
      */
-    public Node(int id, T value){
+    public Node(int id, T value) {
         this(id, value, null);
     }
 
     /**
      * Default Constructor
+     *
      * @see Node#Node(int, Object, Node)
      */
-    public Node(){
+    public Node() {
         this(0, (T) new Object());
     }
 
     /**
      * Method for adding children node
+     *
      * @param idNode - id of adding node
-     * @param value - value of adding node
+     * @param value  - value of adding node
      * @param parent - node to witch we add
      */
-    public void addChildren(int idNode, T value, Node parent){
-        children.add(new Node(idNode,value,parent));
+    public void addChildren(int idNode, T value, Node<T> parent) {
+        children.add(new Node<T>(idNode, value, parent));
     }
 
     /**
      * Method for adding children node
+     *
      * @param node - children node
      */
-    public void addChildren(Node node){
+    public void addChildren(Node<T> node) {
         node.setParent(this);
         children.add(node);
     }
 
     /**
      * Method for adding collection of nodes
+     *
      * @param children - collection of nodes
      */
-    public void addChildren(Collection<Node> children){
-        this.children=children;
-        for (Node node:children) {
+    public void addChildren(Collection<Node<T>> children) {
+        this.children = children;
+        for (Node<T> node : children) {
             node.setParent(this);
         }
     }
 
     /**
      * Method for getting children nodes of current node
+     *
      * @return - children nodes
      */
-    public Collection<Node> getChildren(){
+    public Collection<Node<T>> getChildren() {
         return children;
     }
 
     /**
      * Method for getting id of current node
+     *
      * @return id node
      */
-    public int getId(){
+    public int getId() {
         return id;
     }
 
     /**
      * Method for setting id of current node
+     *
      * @param id - id of node
      */
-    public void setId(int id){
-        this.id =id;
+    public void setId(int id) {
+        this.id = id;
     }
 
     /**
      * Method for getting values of current node
+     *
      * @return - value of node
      */
     public T getValue() {
@@ -132,6 +140,7 @@ public class Node <T>{
 
     /**
      * Method for setting values of current node
+     *
      * @param value - value of node
      */
     public void setValue(T value) {
@@ -140,28 +149,32 @@ public class Node <T>{
 
     /**
      * Method for getting parent node of current node
+     *
      * @return - parent node
      */
-    public Node getParent() {
+    public Node<T> getParent() {
         return parent;
     }
 
     /**
      * Method for setting parent node of current node
+     *
      * @param parent - parent node
      */
-    public void setParent(Node parent) {
+    public void setParent(Node<T> parent) {
         this.parent = parent;
     }
+
     /**
-     *Method for cloning node
+     * Method for cloning node
+     *
      * @return cloned node
      */
-    public Node clone(){
-        Node cloned= new Node (this.id,this.value);
-        Node temp=null;
-        for(Node child:children) {
-            temp=child.clone();
+    public Node<T> clone() {
+        Node<T> cloned = new Node<T>(this.id, this.value);
+        Node<T> temp;
+        for (Node<T> child : children) {
+            temp = child.clone();
             temp.setParent(cloned);
             cloned.addChildren(temp);
         }
