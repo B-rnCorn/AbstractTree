@@ -1,6 +1,6 @@
 package com.project.abstractTree.model;
 
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * Class for tasks in time manager
@@ -8,7 +8,9 @@ import java.util.Date;
  * @author Sergey
  * @version 1.0.0
  */
+
 public class Task {
+    private int id;
     /**
      * Field for name of task
      */
@@ -16,15 +18,32 @@ public class Task {
     /**
      * Field for display active task
      */
-    private boolean active;
-    /**
-     * Field for storing the beginning of active tasks
-     */
-    private Date timeStart;
+    private Instant timeStart;
     /**
      * Field for storing the ending of active tasks
      */
-    private Date timeStop;
+    private Instant timeStop;
+    private long timeDayActivity;
+
+    public Task(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public void Activate() {
+        timeStart = Instant.now();
+    }
+
+    public void Deactivate() {
+        timeStop = Instant.now();
+        timeDayActivity += timeStop.getEpochSecond() - timeStart.getEpochSecond();
+        timeStop = null;
+        timeStart = null;
+    }
+
+    public boolean isActive() {
+        return timeStart != null && timeStop == null;
+    }
 
     public String getName() {
         return name;
@@ -34,31 +53,15 @@ public class Task {
         this.name = name;
     }
 
-    public boolean isActive() {
-        return active;
+    public int getId() {
+        return id;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public Date getTimeStart() {
-        return timeStart;
-    }
-
-    public Date getTimeStop() {
-        return timeStop;
-    }
-
-    public void setTimeStop(Date timeStop) {
-        this.timeStop = timeStop;
-    }
-
-    public void setTimeStart(Date timeStart) {
-        this.timeStart = timeStart;
-    }
-
-    public Task(String name) {
-        this.name = name;
+    public long getTimeDayActivity() {
+        return timeDayActivity;
     }
 }
