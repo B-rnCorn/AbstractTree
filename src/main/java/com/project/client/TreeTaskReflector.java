@@ -13,6 +13,7 @@ import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.util.Callback;
 
 public class TreeTaskReflector {
+    private Task emp;
     public void showTreeInTreeTableView(Tree<Task> taskTree, TreeTableView<Task> treeTableView) {
         treeTableView.setEditable(true);
         TreeTableColumn<Task, String> treeColumnTask = new TreeTableColumn<Task, String>("Задачи");
@@ -24,16 +25,16 @@ public class TreeTaskReflector {
         treeTableView.getColumns().add(treeColumnTask);
         treeTableView.getColumns().add(treeColumnActive);
         treeTableView.getColumns().add(treeColumnActiveTime);
-        TreeItem<Task> item = new TreeItem<Task>();
+        TreeItem<Task> item = new TreeItem<Task>(new Task(0, "Не работа"));
+        //item.getChildren().addAll(new TreeItem<Task>(new Task(2, "Лежать")),new TreeItem<Task>(new Task(3, "Сидеть")),new TreeItem<Task>(new Task(4, "Сидеть")));
         showNodes(taskTree.getRoot(), item);
         treeTableView.setRoot(item);
         treeColumnTask.setCellValueFactory(new TreeItemPropertyValueFactory<Task, String>("name"));
         /*treeColumnActive.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<Task, Boolean>, ObservableValue<Boolean>>() {
             public ObservableValue<Boolean> call(TreeTableColumn.CellDataFeatures<Task, Boolean> param) {
                 TreeItem<Task> treeItem = param.getValue();
-                final Task emp = treeItem.getValue();
+                emp = treeItem.getValue();
                 SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(emp.isActive());
-
                 booleanProp.addListener(new ChangeListener<Boolean>() {
                     public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                         if (newValue) {
@@ -64,5 +65,9 @@ public class TreeTaskReflector {
             item.getChildren().add(new TreeItem<Task>(temp.getValue()));
             showNodes(temp, item.getChildren().get(i));
         }
+    }
+
+    private void treeColumnActivate(TreeTableColumn<Task, Boolean> treeColumnActive) {
+
     }
 }
