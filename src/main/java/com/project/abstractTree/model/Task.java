@@ -26,6 +26,7 @@ public class Task {
     private long timeDayActivity;
 
     public Task(int id, String name) {
+        timeDayActivity = 0;
         this.id = id;
         this.name = name;
     }

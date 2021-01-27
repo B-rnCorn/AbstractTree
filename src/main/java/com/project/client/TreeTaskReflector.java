@@ -3,6 +3,9 @@ package com.project.client;
 import com.project.abstractTree.model.Node;
 import com.project.abstractTree.model.Task;
 import com.project.abstractTree.model.Tree;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableCell;
@@ -14,7 +17,9 @@ import javafx.util.Callback;
 
 public class TreeTaskReflector {
     private Task emp;
-    public void showTreeInTreeTableView(Tree<Task> taskTree, TreeTableView<Task> treeTableView) {
+    TreeItem<Task> root;
+
+    public void createTaskTreeTableView(Tree<Task> taskTree, TreeTableView<Task> treeTableView) {
         treeTableView.setEditable(true);
         TreeTableColumn<Task, String> treeColumnTask = new TreeTableColumn<Task, String>("Задачи");
         TreeTableColumn<Task, Boolean> treeColumnActive = new TreeTableColumn<Task, Boolean>("Активность");
@@ -25,15 +30,19 @@ public class TreeTaskReflector {
         treeTableView.getColumns().add(treeColumnTask);
         treeTableView.getColumns().add(treeColumnActive);
         treeTableView.getColumns().add(treeColumnActiveTime);
-        TreeItem<Task> item = new TreeItem<Task>(new Task(0, "Не работа"));
-        //item.getChildren().addAll(new TreeItem<Task>(new Task(2, "Лежать")),new TreeItem<Task>(new Task(3, "Сидеть")),new TreeItem<Task>(new Task(4, "Сидеть")));
-        showNodes(taskTree.getRoot(), item);
-        treeTableView.setRoot(item);
+    }
+
+    public void showTreeInTreeTableView(Tree<Task> taskTree, TreeTableView<Task> treeTableView) {
+        TreeTableColumn<Task, String> treeColumnTask = (TreeTableColumn<Task, String>) treeTableView.getColumns().get(0);
+        TreeTableColumn<Task, Boolean> treeColumnActive = (TreeTableColumn<Task, Boolean>) treeTableView.getColumns().get(1);
+        TreeTableColumn<Task, String> treeColumnActiveTime = (TreeTableColumn<Task, String>) treeTableView.getColumns().get(2);
+        root = showTree(taskTree.getRoot());
+        treeTableView.setRoot(root);
         treeColumnTask.setCellValueFactory(new TreeItemPropertyValueFactory<Task, String>("name"));
-        /*treeColumnActive.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<Task, Boolean>, ObservableValue<Boolean>>() {
+        treeColumnActive.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<Task, Boolean>, ObservableValue<Boolean>>() {
             public ObservableValue<Boolean> call(TreeTableColumn.CellDataFeatures<Task, Boolean> param) {
                 TreeItem<Task> treeItem = param.getValue();
-                emp = treeItem.getValue();
+                final Task emp = treeItem.getValue();
                 SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(emp.isActive());
                 booleanProp.addListener(new ChangeListener<Boolean>() {
                     public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -46,7 +55,7 @@ public class TreeTaskReflector {
                 });
                 return booleanProp;
             }
-        });*/
+        });
         treeColumnActive.setCellFactory(new Callback<TreeTableColumn<Task, Boolean>, TreeTableCell<Task, Boolean>>() {
             public TreeTableCell<Task, Boolean> call(TreeTableColumn<Task, Boolean> param) {
                 CheckBoxTreeTableCell<Task, Boolean> cell = new CheckBoxTreeTableCell<Task, Boolean>();
@@ -58,13 +67,17 @@ public class TreeTaskReflector {
         treeColumnActiveTime.setCellValueFactory(new TreeItemPropertyValueFactory<Task, String>("timeDayActivity"));
     }
 
-    private void showNodes(Node<Task> taskNode, TreeItem<Task> item) {
-        item = new TreeItem<Task>(taskNode.getValue());
+    private void checkChange(TreeItem<Task> changed, TreeItem<Task> other) {
+
+    }
+
+    private TreeItem<Task> showTree(Node<Task> taskNode) {
+        TreeItem<Task> root = new TreeItem<Task>(taskNode.getValue());
         int i = 0;
         for (Node<Task> temp : taskNode.getChildren()) {
-            item.getChildren().add(new TreeItem<Task>(temp.getValue()));
-            showNodes(temp, item.getChildren().get(i));
+            root.getChildren().add(showTree(temp));
         }
+        return root;
     }
 
     private void treeColumnActivate(TreeTableColumn<Task, Boolean> treeColumnActive) {
