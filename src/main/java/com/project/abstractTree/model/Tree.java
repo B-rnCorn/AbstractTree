@@ -176,7 +176,7 @@ public class Tree<T> implements Serializable, Cloneable {
         Tree<T> tree;
         try {
             ObjectMapper mapper = new ObjectMapper();
-            tree = mapper.readValue(reader, Tree.class);
+            tree = mapper.readValue(reader, this.getClass());
         } catch (IOException e) {
             throw new TreeException(ErrorMessage.I_ERROR_MESSAGE, e);
         }

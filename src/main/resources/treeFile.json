@@ -1,0 +1,48 @@
+{
+  "root": {
+    "id": 0,
+    "value": {
+      "id": 0,
+      "name": "Не работа",
+      "active": false,
+      "timeDayActivity": 0
+    },
+    "children": [
+      {
+        "id": 1,
+        "value": {
+          "id": 1,
+          "name": "Ютуб",
+          "active": false,
+          "timeDayActivity": 0
+        },
+        "children": [
+          {
+            "id": 6,
+            "value": {
+              "id": 6,
+              "name": "Развлечение",
+              "active": false,
+              "timeDayActivity": 0
+            },
+            "children": [],
+            "parent": 1
+          }
+        ],
+        "parent": 0
+      },
+      {
+        "id": 10,
+        "value": {
+          "id": 10,
+          "name": "Лежать",
+          "active": false,
+          "timeDayActivity": 0
+        },
+        "children": [],
+        "parent": 0
+      }
+    ],
+    "parent": null
+  }
+}
