@@ -16,7 +16,6 @@ import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.util.Callback;
 
 public class TreeTaskReflector {
-    //private TreeItem<Task> root;
     private SimpleBooleanProperty choice;
 
     public void createTaskTreeTableView(Tree<Task> taskTree, TreeTableView<Task> treeTableView) {
@@ -55,10 +54,6 @@ public class TreeTaskReflector {
         }
     }
 
-    private void checkColumnActiveValueFactory() {
-        choice.set(!choice.getValue());
-    }
-
     private TreeItem<Task> showTree(Node<Task> taskNode) {
         TreeItem<Task> root = new TreeItem<Task>(taskNode.getValue());
         int i = 0;
@@ -76,15 +71,22 @@ public class TreeTaskReflector {
     private void setColumnActiveValueFactory(final TreeTableView<Task> treeTableView, final TreeTableColumn<Task, Boolean> treeColumnActive) {
         treeColumnActive.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<Task, Boolean>, ObservableValue<Boolean>>() {
             public ObservableValue<Boolean> call(TreeTableColumn.CellDataFeatures<Task, Boolean> param) {
-                TreeItem<Task> treeItem = param.getValue();
-                final Task emp = treeItem.getValue();
-                SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(emp.isActive());
+                final TreeItem<Task> treeItem = param.getValue();
+                final Task task = treeItem.getValue();
+                final SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(task.isActive());
                 booleanProp.addListener(new ChangeListener<Boolean>() {
                     public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                         if (newValue) {
-                            emp.Activate();
+                            task.Activate();
+                            if (choice != null) choice.set(false);
+                            choice = booleanProp;
                         } else {
-                            emp.Deactivate();
+                            task.Deactivate();
+                            /*
+                            for(TreeItem<Task> item:treeItem.getChildren()){
+                                task.addChildTime(item.getValue().getTimeDayActivity());
+                            }*/
+                            treeTableView.refresh();
                         }
                     }
                 });

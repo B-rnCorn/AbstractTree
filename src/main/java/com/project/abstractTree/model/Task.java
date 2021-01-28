@@ -42,6 +42,10 @@ public class Task {
         timeStart = null;
     }
 
+    public void addChildTime(long timeChild) {
+        timeDayActivity += timeChild;
+    }
+
     public boolean isActive() {
         return timeStart != null && timeStop == null;
     }
