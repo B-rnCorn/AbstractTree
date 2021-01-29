@@ -43,17 +43,6 @@ public class TreeTaskReflector {
         setColumnActiveTimeValueFactory(treeColumnActiveTime);
     }
 
-    private void checkSingleChoice(TreeItem<Task> choice, TreeItem<Task> item) {
-        if (item != choice) {
-            if (item.getValue().isActive()) item.getValue().Deactivate();
-        }
-        int i = 0;
-        for (TreeItem<Task> temp : item.getChildren()) {
-            checkSingleChoice(choice, item.getChildren().get(i));
-            i++;
-        }
-    }
-
     private TreeItem<Task> showTree(Node<Task> taskNode) {
         TreeItem<Task> root = new TreeItem<Task>(taskNode.getValue());
         int i = 0;
@@ -63,7 +52,6 @@ public class TreeTaskReflector {
         }
         return root;
     }
-
     private void setColumnTaskValueFactory(TreeTableColumn<Task, String> treeColumnTask) {
         treeColumnTask.setCellValueFactory(new TreeItemPropertyValueFactory<Task, String>("name"));
     }
@@ -82,10 +70,6 @@ public class TreeTaskReflector {
                             choice = booleanProp;
                         } else {
                             task.Deactivate();
-                            /*
-                            for(TreeItem<Task> item:treeItem.getChildren()){
-                                task.addChildTime(item.getValue().getTimeDayActivity());
-                            }*/
                             treeTableView.refresh();
                         }
                     }
