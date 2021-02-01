@@ -43,24 +43,31 @@ public class TreeTaskDelete {
 
     private void addEventHandlerOnSubmitButton() {
         btnSubmitDelete.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, event -> {
-            TreeItem<Task> parentItem = treeTableView.getTreeItem(treeTableView.getEditingCell().getRow());
-            Task parentTask = parentItem.getValue();
-            int taskId = parentItem.getValue().getId();
-            if (treeTableView.getEditingCell().getRow() != 0) {
-                Tree<Task> taskTree = TreeTaskStorage.getTreeTask(treeTableView);
-                if (deleteNode) {
-                    taskTree.splitById(taskId);
+            try {
+                TreeItem<Task> parentItem = treeTableView.getTreeItem(treeTableView.getEditingCell().getRow());
+                Task parentTask = parentItem.getValue();
+                int taskId = parentItem.getValue().getId();
+                if (treeTableView.getEditingCell().getRow() != 0) {
+                    Tree<Task> taskTree = TreeTaskStorage.getTreeTask(treeTableView);
+                    if (deleteNode) {
+                        taskTree.splitById(taskId);
+                    } else {
+                        taskTree.removeNodeById(taskId);
+                    }
+                    TreeTaskReflector.showTree(treeTableView, taskTree);
                 } else {
-                    taskTree.removeNodeById(taskId);
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setHeaderText(ClientErrorMessage.DELETE_ROOT_TASK_ERROR);
+                    alert.setTitle(ClientErrorMessage.DELETE_ERROR);
+                    alert.show();
                 }
-                TreeTaskReflector.showTree(treeTableView, taskTree);
-            } else {
+                paneDelete.setVisible(false);
+            } catch (NullPointerException e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setHeaderText(ClientErrorMessage.DELETE_ROOT_TASK_ERROR);
-                alert.setTitle(ClientErrorMessage.DELETE_ERROR);
+                alert.setHeaderText(ClientErrorMessage.CHOOSE_ERROR_HEADER);
+                alert.setTitle(ClientErrorMessage.CHOOSE_ERROR);
                 alert.show();
             }
-            paneDelete.setVisible(false);
         });
     }
 }

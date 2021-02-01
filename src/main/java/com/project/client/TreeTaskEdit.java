@@ -3,10 +3,7 @@ package com.project.client;
 import com.project.abstractTree.model.Task;
 import com.project.abstractTree.model.Tree;
 import javafx.event.EventHandler;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
@@ -39,14 +36,21 @@ public class TreeTaskEdit {
     private void addEventHandlerOnSubmitButton() {
         btnSubmit.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, new EventHandler<javafx.scene.input.MouseEvent>() {
             public void handle(MouseEvent event) {
-                TreeItem<Task> editItem = treeTableView.getTreeItem(treeTableView.getEditingCell().getRow());
-                Task task = editItem.getValue();
-                task.setName(textField.getText());
-                int taskId = editItem.getValue().getId();
-                Tree<Task> taskTree = TreeTaskStorage.getTreeTask(treeTableView);
-                taskTree.search(taskId).setValue(task);
-                TreeTaskReflector.showTree(treeTableView, taskTree);
-                paneEdit.setVisible(false);
+                try {
+                    TreeItem<Task> editItem = treeTableView.getTreeItem(treeTableView.getEditingCell().getRow());
+                    Task task = editItem.getValue();
+                    task.setName(textField.getText());
+                    int taskId = editItem.getValue().getId();
+                    Tree<Task> taskTree = TreeTaskStorage.getTreeTask(treeTableView);
+                    taskTree.search(taskId).setValue(task);
+                    TreeTaskReflector.showTree(treeTableView, taskTree);
+                    paneEdit.setVisible(false);
+                } catch (NullPointerException e) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setHeaderText(ClientErrorMessage.CHOOSE_ERROR_HEADER);
+                    alert.setTitle(ClientErrorMessage.CHOOSE_ERROR);
+                    alert.show();
+                }
             }
         });
     }
