@@ -42,6 +42,10 @@ public class Task {
         timeStart = null;
     }
 
+    public void reset() {
+        timeDayActivity = 0;
+    }
+
     public void addChildTime(long timeChild) {
         timeDayActivity += timeChild;
     }

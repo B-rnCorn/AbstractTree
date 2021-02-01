@@ -6,6 +6,7 @@ import com.project.abstractTree.model.Tree;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableCell;
@@ -31,7 +32,7 @@ public class TreeTaskReflector {
         treeTableView.getColumns().add(treeColumnActiveTime);
     }
 
-    public void showTreeInTreeTableView(Tree<Task> taskTree, TreeTableView<Task> treeTableView) {
+    public void showTreeInTreeTableView(Tree<Task> taskTree, TreeTableView<Task> treeTableView, TaskInformationDisplay taskInformationDisplay) {
         TreeTableColumn<Task, String> treeColumnTask = (TreeTableColumn<Task, String>) treeTableView.getColumns().get(0);
         TreeTableColumn<Task, Boolean> treeColumnActive = (TreeTableColumn<Task, Boolean>) treeTableView.getColumns().get(1);
         TreeTableColumn<Task, String> treeColumnActiveTime = (TreeTableColumn<Task, String>) treeTableView.getColumns().get(2);
@@ -41,9 +42,15 @@ public class TreeTaskReflector {
         setColumnActiveValueFactory(treeTableView, treeColumnActive);
         setColumnActiveCellFactory(treeColumnActive);
         setColumnActiveTimeValueFactory(treeColumnActiveTime);
+        setOnEditCommit(treeTableView, treeColumnActive, taskInformationDisplay);
     }
 
-    private TreeItem<Task> showTree(Node<Task> taskNode) {
+    public static void showTree(TreeTableView<Task> treeTableView, Tree<Task> taskTree) {
+        TreeItem<Task> root = showTree(taskTree.getRoot());
+        treeTableView.setRoot(root);
+    }
+
+    private static TreeItem<Task> showTree(Node<Task> taskNode) {
         TreeItem<Task> root = new TreeItem<Task>(taskNode.getValue());
         int i = 0;
         for (Node<Task> temp : taskNode.getChildren()) {
@@ -52,6 +59,7 @@ public class TreeTaskReflector {
         }
         return root;
     }
+
     private void setColumnTaskValueFactory(TreeTableColumn<Task, String> treeColumnTask) {
         treeColumnTask.setCellValueFactory(new TreeItemPropertyValueFactory<Task, String>("name"));
     }
@@ -65,16 +73,34 @@ public class TreeTaskReflector {
                 booleanProp.addListener(new ChangeListener<Boolean>() {
                     public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                         if (newValue) {
+                            //if(treeItem.isLeaf()){
                             task.Activate();
+                            //}
+                            //else{
+                            //    treeItem.getValue().reset();
+                            //     for(TreeItem<Task>children:treeItem.getChildren()){
+                            //        treeItem.getValue().addChildTime(children.getValue().getTimeDayActivity());
+                            //    }
+                            //}
                             if (choice != null) choice.set(false);
                             choice = booleanProp;
                         } else {
+                            /*if(treeItem.isLeaf())*/
                             task.Deactivate();
                             treeTableView.refresh();
                         }
                     }
                 });
                 return booleanProp;
+            }
+        });
+    }
+
+    public void setOnEditCommit(final TreeTableView<Task> treeTableView, TreeTableColumn<Task, Boolean> treeColumnActive, final TaskInformationDisplay taskInformationDisplay) {
+        treeColumnActive.addEventHandler(TreeTableColumn.editStartEvent(), new EventHandler<TreeTableColumn.CellEditEvent<Object, Object>>() {
+            public void handle(TreeTableColumn.CellEditEvent<Object, Object> event) {
+                TreeItem<Task> editItem = treeTableView.getTreeItem(event.getTreeTablePosition().getRow());
+                taskInformationDisplay.showProperty(treeTableView, editItem);
             }
         });
     }

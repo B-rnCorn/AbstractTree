@@ -119,13 +119,13 @@ public class Tree<T> implements Serializable, Cloneable {
      * @param id - id of node for slitting
      */
     public void splitById(int id) {
-        Node<T> splittingNode = search(id).clone();
+        Node<T> splittingNode = search(id);
         int parentId = splittingNode.getParent().getId();
-        removeNodeById(id);
         Collection<Node<T>> collection = splittingNode.getChildren();
         for (Node<T> child : collection) {
             add(parentId, child);
         }
+        removeNodeById(id);
     }
 
     /**
