@@ -53,6 +53,4 @@ public class MainController {
         treeTaskReflector.createTaskTreeTableView(taskTree, treeTableView);
         treeTaskReflector.showTreeInTreeTableView(taskTree, treeTableView, taskInformationDisplay);
     }
-
-
 }
