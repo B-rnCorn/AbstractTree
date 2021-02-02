@@ -1,14 +1,13 @@
 package com.project.server.service;
 
-import com.google.common.cache.CacheBuilder;
 import com.project.abstractTree.model.Tree;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import static com.project.server.service.Constants.*;
+import static com.project.server.service.Constants.CACHE;
+import static com.project.server.service.Constants.TASKTREE_ID_HOLDER;
 
 @Service
 public class TreeService {
@@ -39,7 +38,7 @@ public class TreeService {
     }
 
     public boolean delete(int id) {
-       CACHE.invalidate(id);
-       return CACHE.getIfPresent(id) == null;
+        CACHE.invalidate(id);
+        return CACHE.getIfPresent(id) == null;
     }
 }

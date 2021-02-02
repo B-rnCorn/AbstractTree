@@ -30,7 +30,7 @@ public class ServerController {
         List<Tree<?>> taskTreesList = treeService.readAll();
 
         return taskTreesList != null && !taskTreesList.isEmpty() ?
-                  new ResponseEntity<>(taskTreesList, HttpStatus.OK)
+                new ResponseEntity<>(taskTreesList, HttpStatus.OK)
                 : new ResponseEntity<>(taskTreesList, HttpStatus.NOT_FOUND);
     }
 
