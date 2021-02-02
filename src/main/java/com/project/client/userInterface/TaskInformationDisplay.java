@@ -1,4 +1,4 @@
-package com.project.client;
+package com.project.client.userInterface;
 
 import com.project.abstractTree.model.Task;
 import javafx.scene.control.Label;

@@ -104,7 +104,7 @@ public class Tree<T> implements Serializable, Cloneable {
         Iterator<Node<T>> iterator = node.getChildren().iterator();
 
         while (iterator.hasNext()) {
-            Node<T> tmp = (Node<T>) iterator.next();
+            Node<T> tmp = iterator.next();
             if (tmp.getId() == subNodeId) {
                 iterator.remove();
                 return true;

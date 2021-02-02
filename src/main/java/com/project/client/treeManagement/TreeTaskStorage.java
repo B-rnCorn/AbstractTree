@@ -1,4 +1,4 @@
-package com.project.client;
+package com.project.client.treeManagement;
 
 import com.project.abstractTree.model.Node;
 import com.project.abstractTree.model.Task;
@@ -8,7 +8,7 @@ import javafx.scene.control.TreeTableView;
 
 public class TreeTaskStorage {
     public static Tree<Task> getTreeTask(TreeTableView<Task> treeTableView) {
-        Tree<Task> taskTree = new Tree<Task>(new Node<Task>(treeTableView.getRoot().getValue().getId(), treeTableView.getRoot().getValue()));
+        Tree<Task> taskTree = new Tree<>(new Node<>(treeTableView.getRoot().getValue().getId(), treeTableView.getRoot().getValue()));
         copyNode(treeTableView.getRoot(), taskTree.getRoot());
         return taskTree;
     }
@@ -17,7 +17,7 @@ public class TreeTaskStorage {
         int i = 0;
         Node<Task> tempNode;
         for (TreeItem<Task> temp : treeItem.getChildren()) {
-            tempNode = new Node<Task>(temp.getValue().getId(), temp.getValue(), node);
+            tempNode = new Node<>(temp.getValue().getId(), temp.getValue(), node);
             node.addChildren(tempNode);
             copyNode(temp, tempNode);
             i++;

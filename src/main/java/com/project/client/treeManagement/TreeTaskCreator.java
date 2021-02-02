@@ -1,4 +1,4 @@
-package com.project.client;
+package com.project.client.treeManagement;
 
 import com.project.abstractTree.exceptions.TreeException;
 import com.project.abstractTree.model.Node;

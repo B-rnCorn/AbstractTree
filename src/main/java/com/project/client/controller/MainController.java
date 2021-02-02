@@ -2,7 +2,12 @@ package com.project.client.controller;
 
 import com.project.abstractTree.model.Task;
 import com.project.abstractTree.model.Tree;
-import com.project.client.*;
+import com.project.client.treeManagement.TreeTaskCreator;
+import com.project.client.treeManagement.TreeTaskReflector;
+import com.project.client.userInterface.TaskAdd;
+import com.project.client.userInterface.TaskDelete;
+import com.project.client.userInterface.TaskEdit;
+import com.project.client.userInterface.TaskInformationDisplay;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
@@ -41,14 +46,13 @@ public class MainController {
     @FXML
     private Button btnSubmitDelete;
 
-    private Tree<Task> taskTree = TreeTaskCreator.create();
-
     @FXML
     private void initialize() {
+        Tree<Task> taskTree = TreeTaskCreator.create();
         TreeTaskReflector treeTaskReflector = new TreeTaskReflector();
-        TreeTaskEdit treeTaskEdit = new TreeTaskEdit(treeTableView, btnEditTask, paneEdit, textFieldEditName, btnSubmitEdit);
-        TreeTaskAdd treeTaskAdd = new TreeTaskAdd(treeTableView, btnAddTask, paneAdd, textFieldAddTaskName, btnSubmitAdd);
-        TreeTaskDelete treeTaskDelete = new TreeTaskDelete(treeTableView, btnDeleteTask, paneDelete, choiceBoxDeleteType, btnSubmitDelete);
+        TaskEdit taskEdit = new TaskEdit(treeTableView, btnEditTask, paneEdit, textFieldEditName, btnSubmitEdit);
+        TaskAdd taskAdd = new TaskAdd(treeTableView, btnAddTask, paneAdd, textFieldAddTaskName, btnSubmitAdd);
+        TaskDelete taskDelete = new TaskDelete(treeTableView, btnDeleteTask, paneDelete, choiceBoxDeleteType, btnSubmitDelete);
         TaskInformationDisplay taskInformationDisplay = new TaskInformationDisplay(paneProperty, labelTaskName, labelTaskTime);
         treeTaskReflector.createTaskTreeTableView(taskTree, treeTableView);
         treeTaskReflector.showTreeInTreeTableView(taskTree, treeTableView, taskInformationDisplay);

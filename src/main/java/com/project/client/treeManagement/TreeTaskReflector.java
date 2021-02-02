@@ -1,11 +1,10 @@
-package com.project.client;
+package com.project.client.treeManagement;
 
 import com.project.abstractTree.model.Node;
 import com.project.abstractTree.model.Task;
 import com.project.abstractTree.model.Tree;
+import com.project.client.userInterface.TaskInformationDisplay;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.TreeItem;
@@ -65,34 +64,30 @@ public class TreeTaskReflector {
     }
 
     private void setColumnActiveValueFactory(final TreeTableView<Task> treeTableView, final TreeTableColumn<Task, Boolean> treeColumnActive) {
-        treeColumnActive.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<Task, Boolean>, ObservableValue<Boolean>>() {
-            public ObservableValue<Boolean> call(TreeTableColumn.CellDataFeatures<Task, Boolean> param) {
-                final TreeItem<Task> treeItem = param.getValue();
-                final Task task = treeItem.getValue();
-                final SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(task.isActive());
-                booleanProp.addListener(new ChangeListener<Boolean>() {
-                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                        if (newValue) {
-                            //if(treeItem.isLeaf()){
-                            task.Activate();
-                            //}
-                            //else{
-                            //    treeItem.getValue().reset();
-                            //     for(TreeItem<Task>children:treeItem.getChildren()){
-                            //        treeItem.getValue().addChildTime(children.getValue().getTimeDayActivity());
-                            //    }
-                            //}
-                            if (choice != null) choice.set(false);
-                            choice = booleanProp;
-                        } else {
-                            /*if(treeItem.isLeaf())*/
-                            task.Deactivate();
-                            treeTableView.refresh();
-                        }
-                    }
-                });
-                return booleanProp;
-            }
+        treeColumnActive.setCellValueFactory(param -> {
+            final TreeItem<Task> treeItem = param.getValue();
+            final Task task = treeItem.getValue();
+            final SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(task.isActive());
+            booleanProp.addListener((observable, oldValue, newValue) -> {
+                if (newValue) {
+                    //if(treeItem.isLeaf()){
+                    task.Activate();
+                    //}
+                    //else{
+                    //    treeItem.getValue().reset();
+                    //     for(TreeItem<Task>children:treeItem.getChildren()){
+                    //        treeItem.getValue().addChildTime(children.getValue().getTimeDayActivity());
+                    //    }
+                    //}
+                    if (choice != null) choice.set(false);
+                    choice = booleanProp;
+                } else {
+                    /*if(treeItem.isLeaf())*/
+                    task.Deactivate();
+                    treeTableView.refresh();
+                }
+            });
+            return booleanProp;
         });
     }
 
