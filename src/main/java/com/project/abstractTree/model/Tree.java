@@ -26,6 +26,11 @@ public class Tree<T> implements Serializable, Cloneable {
     private Node<T> root;
 
     /**
+     * Field for storing the maximum Id
+     */
+    private int maxId;
+
+    /**
      * Constructor
      *
      * @param root - root node
@@ -59,6 +64,24 @@ public class Tree<T> implements Serializable, Cloneable {
      */
     public void setRoot(Node<T> root) {
         this.root = root;
+    }
+
+    /**
+     * Method for getting maximum Id
+     *
+     * @return maximum Id
+     */
+    public int getMaxId() {
+        return maxId;
+    }
+
+    /**
+     * Method for setting root
+     *
+     * @param newId - new max. Id
+     */
+    public void setMaxId(int newId) {
+        this.maxId = newId;
     }
 
     /**
