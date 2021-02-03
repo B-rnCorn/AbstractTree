@@ -53,8 +53,8 @@ public class ServerController {
                 : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
-    @DeleteMapping(value = "/tasks/{id}?type={keyword}")
-    public ResponseEntity<Node<Task>> delete(@PathVariable(name = "id") int id, @PathVariable (name = "keyword") String type) {
+    @DeleteMapping(value = "/tasks/{id}/{type}")
+    public ResponseEntity<Node<Task>> delete(@PathVariable(name = "id") int id, @PathVariable (name = "type") String type) {
         Node<Task> parentNode = treeService.delete(id, Boolean.parseBoolean(type));
 
         return parentNode != null ?
