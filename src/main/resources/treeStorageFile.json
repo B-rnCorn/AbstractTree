@@ -1,0 +1,26 @@
+{
+  "root": {
+    "id": -1,
+    "value": {
+      "id": -1,
+      "name": "Корень",
+      "active": false,
+      "timeDayActivity": 0
+    },
+    "children": [
+      {
+        "id": 0,
+        "value": {
+          "id": 0,
+          "name": "Не работа",
+          "active": false,
+          "timeDayActivity": 0
+        },
+        "children": [],
+        "parent": -1
+      }
+    ],
+    "parent": null
+  },
+  "maxId": 0
+}
