@@ -1,7 +1,6 @@
 package com.project.abstractTree.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.util.Collection;
@@ -26,7 +25,6 @@ public class Node<T> implements Cloneable {
     /**
      * Field for node value
      */
-    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
     private T value;
     /**
      * Field for nodes children
