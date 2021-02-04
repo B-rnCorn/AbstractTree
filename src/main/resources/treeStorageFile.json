@@ -4,8 +4,8 @@
     "value": {
       "id": -1,
       "name": "Корень",
-      "active": false,
-      "timeDayActivity": 0
+      "timeDayActivity": 0,
+      "active": false
     },
     "children": [
       {
@@ -13,8 +13,8 @@
         "value": {
           "id": 0,
           "name": "Не работа",
-          "active": false,
-          "timeDayActivity": 0
+          "timeDayActivity": 0,
+          "active": false
         },
         "children": [],
         "parent": -1

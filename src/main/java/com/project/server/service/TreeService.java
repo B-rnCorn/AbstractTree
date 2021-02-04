@@ -1,5 +1,6 @@
 package com.project.server.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.abstractTree.exceptions.TreeException;
 import com.project.abstractTree.model.Node;
 import com.project.abstractTree.model.Tree;
@@ -38,9 +39,10 @@ public class TreeService {
 
         Task newTask = new Task(taskId, taskName);
         if (TASK_TREE.add(parentId, new Node<>(taskId, newTask))) {
+            ObjectMapper mapper = new ObjectMapper();
             try {
-                TASK_TREE.write(new FileWriter("src/main/resources/treeStorageFile.json", false));
-            } catch (TreeException | IOException e) {
+                mapper.writeValue(new FileWriter("src/main/resources/treeStorageFile.json"), TASK_TREE);
+            } catch (IOException e) {
                 e.printStackTrace();
                 return null;
             }
@@ -61,11 +63,13 @@ public class TreeService {
         Node<Task> taskNode = TASK_TREE.search(id);
 
         if (taskNode != null && id >= 0) {
+
+            ObjectMapper mapper = new ObjectMapper();
             try {
                 taskNode.setValue(task);
-                TASK_TREE.write(new FileWriter("src/main/resources/treeStorageFile.json", false));
+                mapper.writeValue(new FileWriter("src/main/resources/treeStorageFile.json"), TASK_TREE);
                 return true;
-            } catch (TreeException | IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
                 return false;
             }
@@ -81,10 +85,11 @@ public class TreeService {
             if (type) TASK_TREE.splitById(id);
             else TASK_TREE.removeNodeById(id);
 
+            ObjectMapper mapper = new ObjectMapper();
             try {
-                TASK_TREE.write(new FileWriter("src/main/resources/treeStorageFile.json", false));
+                mapper.writeValue(new FileWriter("src/main/resources/treeStorageFile.json"), TASK_TREE);
                 return TASK_TREE.search(parentId);
-            } catch (TreeException | IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
                 return null;
             }
